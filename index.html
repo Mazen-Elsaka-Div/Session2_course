@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Session 2 — Input & Output | Kids Computer Class</title>
+<meta name="description" content="Learn about computer Input and Output devices in a fun, interactive lesson for kids ages 6–10."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet"/>
+<style>
+/* ─── RESET & BASE ─────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#028090;--teal-dark:#015F6B;--teal-light:#E0F4F6;--teal-mid:#5DB8C4;
+  --coral:#F96167;--coral-light:#FEE8E9;--coral-dark:#C73D42;
+  --amber:#F4A261;--amber-light:#FEF3E9;--amber-dark:#C97D3C;
+  --white:#FFFFFF;--off-white:#F7FBFC;
+  --dark-bg:#021B1E;--dark-bg2:#033740;
+  --text-dark:#0D2B30;--text-gray:#5A7A80;
+  --green:#2DC653;--green-light:#E6FAF0;
+  --yellow:#FFD166;--navy:#1A3A4A;
+  --radius:1.2rem;--shadow:0 8px 32px rgba(0,0,0,.14);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--dark-bg);
+  color:var(--text-dark);
+  min-height:100vh;
+  overflow:hidden;
+}
+
+/* ─── PROGRESS BAR ─────────────────────────────────── */
+#progress-bar{
+  position:fixed;top:0;left:0;height:5px;
+  background:linear-gradient(90deg,var(--coral),var(--amber),var(--teal));
+  transition:width .4s ease;z-index:1000;
+  box-shadow:0 0 12px rgba(249,97,103,.6);
+}
+
+/* ─── TOP NAV ──────────────────────────────────────── */
+#top-nav{
+  position:fixed;top:5px;left:0;right:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.55rem 1.4rem;z-index:999;
+}
+#slide-counter{
+  font-family:'Fredoka One',cursive;
+  font-size:1rem;color:rgba(255,255,255,.7);
+  background:rgba(255,255,255,.08);
+  padding:.3rem .9rem;border-radius:2rem;
+  backdrop-filter:blur(8px);
+}
+#slide-title-nav{
+  font-family:'Fredoka One',cursive;
+  font-size:1.1rem;color:var(--yellow);
+  text-shadow:0 2px 8px rgba(0,0,0,.4);
+  max-width:60%;text-align:center;
+}
+#nav-dots{
+  display:flex;gap:.4rem;align-items:center;
+}
+.dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,.25);
+  cursor:pointer;transition:all .3s;
+}
+.dot.active{background:var(--yellow);transform:scale(1.5);}
+.dot:hover{background:rgba(255,255,255,.6);}
+
+/* ─── SLIDES WRAPPER ───────────────────────────────── */
+#slides-wrapper{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.slide{
+  display:none;
+  position:absolute;
+  width:min(960px,96vw);
+  max-height:96vh;
+  overflow-y:auto;
+  animation:slideIn .45s cubic-bezier(.22,.68,0,1.2) both;
+}
+.slide.active{display:block;}
+@keyframes slideIn{
+  from{opacity:0;transform:translateY(28px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* ─── DARK SLIDE ───────────────────────────────────── */
+.dark-slide{
+  background:linear-gradient(135deg,var(--dark-bg) 0%,var(--dark-bg2) 100%);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:2.5rem 2.8rem;
+  border:1px solid rgba(93,184,196,.15);
+  position:relative;overflow:hidden;
+}
+.dark-slide::before{
+  content:'';position:absolute;
+  width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,rgba(93,184,196,.12),transparent 70%);
+  top:-80px;right:-80px;pointer-events:none;
+}
+.dark-slide::after{
+  content:'';position:absolute;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(249,97,103,.08),transparent 70%);
+  bottom:-60px;left:-60px;pointer-events:none;
+}
+
+/* ─── LIGHT SLIDE ──────────────────────────────────── */
+.light-slide{
+  background:var(--off-white);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:0 0 1.8rem;
+  overflow:hidden;
+}
+.slide-header{
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem 1.4rem;
+  font-family:'Fredoka One',cursive;
+  font-size:1.45rem;color:#fff;
+  text-align:center;
+}
+.slide-header.teal{background:linear-gradient(90deg,var(--teal-dark),var(--teal));}
+.slide-header.coral{background:linear-gradient(90deg,var(--coral-dark),var(--coral));}
+.slide-header.amber{background:linear-gradient(90deg,var(--amber-dark),var(--amber));}
+.slide-body{padding:1.4rem 2rem 0;}
+
+/* ─── TYPOGRAPHY ───────────────────────────────────── */
+.slide-tag{
+  display:inline-block;
+  font-family:'Fredoka One',cursive;
+  font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:.25rem .8rem;border-radius:2rem;margin-bottom:.5rem;
+}
+.tag-teal{background:var(--teal-light);color:var(--teal-dark);}
+.tag-coral{background:var(--coral-light);color:var(--coral-dark);}
+.tag-amber{background:var(--amber-light);color:var(--amber-dark);}
+
+.big-title{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(1.8rem,4vw,3rem);
+  line-height:1.1;margin-bottom:.5rem;
+}
+.big-title.yellow{color:var(--yellow);}
+.big-title.teal{color:var(--teal-light);}
+.big-title.coral{color:var(--coral);}
+.big-title.white{color:#fff;}
+
+.subtitle{
+  font-size:clamp(.9rem,2vw,1.15rem);
+  opacity:.8;margin-bottom:1.2rem;
+}
+.subtitle.light{color:var(--teal-light);}
+.subtitle.dark{color:var(--text-gray);}
+
+/* ─── CARDS & GRIDS ────────────────────────────────── */
+.card{
+  background:#fff;border-radius:var(--radius);
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  padding:1.2rem 1.4rem;
+  border:2px solid transparent;
+  transition:transform .25s,box-shadow .25s;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.14);}
+.card.coral{border-color:var(--coral);}
+.card.amber{border-color:var(--amber);}
+.card.teal{border-color:var(--teal);}
+.card.green{border-color:var(--green);}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+
+/* ─── DEVICE PHOTO CARD ────────────────────────────── */
+.device-card{
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:0 6px 24px rgba(0,0,0,.12);
+  transition:transform .3s,box-shadow .3s;
+  cursor:default;position:relative;
+}
+.device-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 12px 36px rgba(0,0,0,.2);}
+.device-card img{
+  width:100%;aspect-ratio:1;object-fit:cover;display:block;
+}
+.device-card .dc-label{
+  padding:.7rem .9rem .5rem;
+  background:#fff;
+  font-family:'Fredoka One',cursive;
+  font-size:1.05rem;text-align:center;
+}
+.device-card .dc-tag{
+  display:block;
+  text-align:center;
+  font-size:.8rem;font-weight:700;
+  padding:.3rem;
+  color:#fff;
+}
+.device-card.input .dc-label{color:var(--coral);}
+.device-card.input .dc-tag{background:var(--coral);}
+.device-card.output .dc-label{color:var(--amber-dark);}
+.device-card.output .dc-tag{background:var(--amber);}
+
+/* ─── BULLET LIST ──────────────────────────────────── */
+.bullet-list{list-style:none;display:flex;flex-direction:column;gap:.65rem;}
+.bullet-list li{
+  display:flex;align-items:center;gap:.75rem;
+  background:#fff;border-radius:.8rem;
+  padding:.75rem 1rem;
+  font-size:1rem;font-weight:600;color:var(--text-dark);
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  border-left:4px solid transparent;
+  transition:transform .2s;
+}
+.bullet-list li:hover{transform:translateX(4px);}
+.bullet-list.coral li{border-left-color:var(--coral);}
+.bullet-list.amber li{border-left-color:var(--amber);}
+.bullet-list.teal li{border-left-color:var(--teal);}
+.bullet-list li .bullet-icon{font-size:1.3rem;}
+
+/* ─── BADGE ────────────────────────────────────────── */
+.badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:'Fredoka One',cursive;font-size:.95rem;
+  padding:.35rem 1.1rem;border-radius:2rem;
+  font-weight:700;
+}
+.badge.coral{background:var(--coral);color:#fff;}
+.badge.amber{background:var(--amber);color:#fff;}
+.badge.teal{background:var(--teal);color:#fff;}
+.badge.green{background:var(--green);color:#fff;}
+.badge.yellow{background:var(--yellow);color:var(--dark-bg);}
+
+/* ─── ANALOGY BOX ──────────────────────────────────── */
+.analogy-box{
+  border-radius:var(--radius);
+  padding:1rem 1.2rem;
+  display:flex;gap:.8rem;align-items:flex-start;
+  font-size:.92rem;font-style:italic;font-weight:600;
+}
+.analogy-box.coral{background:var(--coral-light);color:var(--coral-dark);border:1.5px dashed var(--coral);}
+.analogy-box.amber{background:var(--amber-light);color:var(--amber-dark);border:1.5px dashed var(--amber);}
+.analogy-box .analogy-icon{font-size:1.8rem;flex-shrink:0;}
+
+/* ─── DEFINITION PANEL ─────────────────────────────── */
+.def-panel{
+  display:grid;grid-template-columns:1fr 1.6fr;gap:1.4rem;
+}
+.def-left{
+  border-radius:var(--radius);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:2rem 1rem;text-align:center;color:#fff;
+  gap:1rem;
+}
+.def-left.coral{background:linear-gradient(160deg,var(--coral),var(--coral-dark));}
+.def-left.amber{background:linear-gradient(160deg,var(--amber),var(--amber-dark));}
+.def-left .def-word{
+  font-family:'Fredoka One',cursive;
+  font-size:2.8rem;letter-spacing:.05em;
+}
+.def-left .def-img{width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.25));}
+.def-left .def-desc{
+  font-size:.9rem;font-weight:700;
+  background:rgba(0,0,0,.18);border-radius:.8rem;padding:.6rem .8rem;
+  line-height:1.4;
+}
+.def-right{
+  display:flex;flex-direction:column;gap:.9rem;
+  justify-content:center;
+}
+
+/* ─── RECAP ROWS ───────────────────────────────────── */
+.recap-row{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;gap:.8rem;
+  animation:fadeUp .4s ease both;
+}
+.recap-q,.recap-a{
+  border-radius:.9rem;padding:.75rem 1rem;
+  font-weight:700;font-size:.95rem;
+}
+.recap-q{background:#fff;border:1.5px solid var(--teal);color:var(--text-dark);}
+.recap-a{background:var(--teal);color:#fff;text-align:center;}
+.recap-arrow{font-size:1.4rem;color:var(--teal);}
+
+/* ─── SPLIT PANEL (slide 4) ────────────────────────── */
+.split-panel{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:1rem;align-items:center;
+}
+.split-box{
+  border-radius:var(--radius);padding:1.5rem 1rem;
+  text-align:center;color:#fff;
+  background:var(--dark-bg2);border:1.5px solid rgba(93,184,196,.3);
+}
+.split-box .emoji{font-size:3rem;margin-bottom:.5rem;}
+.split-box .split-name{
+  font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:.3rem;
+}
+.split-box .split-sub{font-size:.85rem;color:var(--teal-mid);line-height:1.4;}
+.split-mid{text-align:center;color:var(--yellow);font-size:.85rem;font-weight:800;}
+.split-mid .arrow{font-size:2rem;display:block;}
+.split-mid .label{
+  display:inline-block;margin:.2rem 0;
+  font-family:'Fredoka One',cursive;font-size:.8rem;
+  padding:.15rem .6rem;border-radius:2rem;
+}
+.split-mid .label.coral{background:var(--coral);color:#fff;}
+.split-mid .label.amber{background:var(--amber);color:#fff;}
+
+/* ─── THE RULE SLIDE ───────────────────────────────── */
+.rule-panel{
+  display:grid;grid-template-columns:1fr 60px 1fr;
+  gap:1rem;align-items:center;
+}
+.rule-box{
+  border-radius:var(--radius);padding:1.8rem 1.2rem;
+  text-align:center;
+  border:2px solid;
+}
+.rule-box.coral{background:rgba(249,97,103,.12);border-color:var(--coral);}
+.rule-box.amber{background:rgba(244,162,97,.12);border-color:var(--amber);}
+.rule-box .rule-word{
+  font-family:'Fredoka One',cursive;
+  font-size:2.2rem;margin:1rem 0 .5rem;
+}
+.rule-box.coral .rule-word{color:var(--coral);}
+.rule-box.amber .rule-word{color:var(--amber);}
+.rule-box .rule-desc{font-size:.95rem;color:rgba(255,255,255,.85);margin-bottom:.6rem;}
+.rule-box .rule-devices{font-size:.8rem;color:rgba(255,255,255,.5);}
+.rule-vs{
+  font-family:'Fredoka One',cursive;font-size:2rem;
+  color:var(--yellow);text-align:center;
+}
+.rule-footer{
+  margin-top:1.4rem;
+  background:rgba(93,184,196,.15);
+  border:1px solid var(--teal-mid);
+  border-radius:.9rem;padding:.9rem 1.2rem;
+  text-align:center;
+  font-family:'Fredoka One',cursive;
+  font-size:1.05rem;color:var(--yellow);
+}
+
+/* ─── ACTIVITY SLIDE ───────────────────────────────── */
+.activity-instruction{
+  background:var(--teal-light);border:1.5px solid var(--teal);
+  border-radius:.9rem;padding:.85rem 1rem;
+  text-align:center;
+  font-family:'Fredoka One',cursive;
+  font-size:1.15rem;color:var(--teal-dark);
+  margin-bottom:1.2rem;
+}
+.activity-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;
+}
+.activity-card{
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  border:2px solid;cursor:pointer;
+  transition:transform .25s;position:relative;
+}
+.activity-card:hover{transform:scale(1.04);}
+.activity-card.coral{border-color:var(--coral);}
+.activity-card.amber{border-color:var(--amber);}
+.activity-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.activity-card .ac-name{
+  padding:.5rem;text-align:center;
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  background:#fff;
+}
+.activity-card.coral .ac-name{color:var(--coral);}
+.activity-card.amber .ac-name{color:var(--amber-dark);}
+.activity-card .ac-answer{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:.4rem;text-align:center;
+  font-family:'Fredoka One',cursive;font-size:1rem;color:#fff;
+  opacity:0;transition:opacity .3s;
+}
+.activity-card.coral .ac-answer{background:var(--coral);}
+.activity-card.amber .ac-answer{background:var(--amber);}
+.activity-card:hover .ac-answer{opacity:1;}
+
+/* ─── QUIZ SLIDE ───────────────────────────────────── */
+.quiz-list{display:flex;flex-direction:column;gap:.85rem;}
+.quiz-item{
+  display:grid;grid-template-columns:1fr auto;
+  gap:.8rem;align-items:center;
+}
+.quiz-q{
+  border-radius:.9rem;padding:.85rem 1.1rem;
+  font-weight:700;font-size:1rem;color:#fff;
+  opacity:0;transform:translateX(-20px);
+  transition:opacity .4s,transform .4s;
+}
+.quiz-item.revealed .quiz-q{opacity:1;transform:translateX(0);}
+.quiz-hint{
+  border-radius:.9rem;padding:.85rem 1rem;
+  font-size:.88rem;color:#fff;font-style:italic;
+  min-width:200px;text-align:center;
+  opacity:0;transition:opacity .5s .15s;
+}
+.quiz-item.revealed .quiz-hint{opacity:.7;}
+
+/* ─── AGENDA ───────────────────────────────────────── */
+.agenda-list{display:flex;flex-direction:column;gap:.7rem;}
+.agenda-item{
+  display:grid;grid-template-columns:48px 1fr;
+  gap:.8rem;align-items:center;
+  border-radius:.9rem;padding:.7rem 1rem;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  transition:background .2s;
+}
+.agenda-item:hover{background:rgba(255,255,255,.1);}
+.agenda-num{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka One',cursive;font-size:1.1rem;color:#fff;
+  flex-shrink:0;
+}
+.agenda-label{font-family:'Fredoka One',cursive;font-size:1rem;margin-bottom:.1rem;}
+.agenda-desc{font-size:.82rem;color:rgba(255,255,255,.55);}
+
+/* ─── HOMEWORK ─────────────────────────────────────── */
+.hw-panel{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+.hw-card{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.hw-card-head{
+  padding:.75rem 1rem;
+  font-family:'Fredoka One',cursive;font-size:1rem;color:#fff;
+  text-align:center;
+}
+.hw-card-head.coral{background:var(--coral);}
+.hw-card-head.teal{background:var(--teal);}
+.hw-card-body{background:#fff;padding:1rem;}
+.device-pill{
+  display:inline-block;
+  background:var(--coral-light);border:1px solid var(--coral);
+  color:var(--text-dark);font-size:.82rem;font-weight:700;
+  border-radius:2rem;padding:.25rem .7rem;margin:.18rem;
+}
+.hw-teaser{
+  margin-top:1rem;
+  background:var(--teal-light);border:1.5px solid var(--teal);
+  border-radius:.9rem;padding:.75rem 1rem;text-align:center;
+  font-family:'Fredoka One',cursive;font-size:.92rem;color:var(--teal-dark);
+}
+
+/* ─── NAV BUTTONS ──────────────────────────────────── */
+#nav-buttons{
+  position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%);
+  display:flex;gap:1rem;align-items:center;z-index:999;
+}
+.nav-btn{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  padding:.7rem 1.8rem;border-radius:2rem;border:none;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+}
+.nav-btn:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.35);}
+.nav-btn:active{transform:scale(.96);}
+#btn-prev{background:rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(8px);}
+#btn-next{background:linear-gradient(135deg,var(--teal),var(--teal-mid));color:#fff;}
+.nav-btn svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.5;fill:none;}
+
+/* ─── CONFETTI ─────────────────────────────────────── */
+.confetti-piece{
+  position:fixed;width:10px;height:10px;
+  border-radius:2px;top:-20px;
+  animation:confettiFall linear forwards;
+  pointer-events:none;z-index:9999;
+}
+@keyframes confettiFall{
+  to{transform:translateY(110vh) rotate(720deg);}
+}
+
+/* ─── TITLE SLIDE LAYOUT ───────────────────────────── */
+.title-layout{
+  display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;
+}
+.title-left-panel{
+  background:linear-gradient(160deg,var(--teal),var(--teal-dark));
+  border-radius:var(--radius);padding:2.2rem 1.6rem;
+  text-align:center;
+  box-shadow:0 8px 32px rgba(2,128,144,.35);
+}
+.title-icons-row{display:flex;justify-content:center;gap:1.2rem;margin-bottom:1rem;}
+.title-icon-box{
+  background:rgba(255,255,255,.15);border-radius:.9rem;
+  padding:.7rem;display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;backdrop-filter:blur(4px);
+}
+.title-divider{height:2px;background:rgba(255,255,255,.25);margin:1rem 0;}
+.title-session{font-family:'Fredoka One',cursive;font-size:1rem;color:var(--teal-light);}
+.title-main{font-family:'Fredoka One',cursive;font-size:3rem;color:#fff;line-height:1;}
+.title-sub{font-size:.85rem;color:var(--teal-light);margin-top:.6rem;}
+.title-right{display:flex;flex-direction:column;gap:1.2rem;}
+.title-question{
+  border-radius:var(--radius);padding:1.2rem 1.4rem;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(6px);
+}
+.title-q-text{font-size:1.1rem;color:var(--teal-light);line-height:1.4;}
+.title-q-answer{
+  font-family:'Fredoka One',cursive;font-size:1.4rem;
+  color:var(--yellow);margin-top:.4rem;
+}
+.stars-row{display:flex;gap:.5rem;font-size:1.8rem;margin-top:.8rem;}
+
+/* ─── DEVICE DETAIL SLIDE ──────────────────────────── */
+.device-detail{
+  display:grid;grid-template-columns:1fr 1.4fr;gap:1.4rem;
+  align-items:start;
+}
+.device-photo-frame{
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.15);
+  border:3px solid;
+}
+.device-photo-frame.coral{border-color:var(--coral);}
+.device-photo-frame.amber{border-color:var(--amber);}
+.device-photo-frame img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.device-detail-right{display:flex;flex-direction:column;gap:.8rem;}
+.device-confirm-badge{
+  text-align:center;border-radius:.9rem;padding:.8rem 1rem;
+  font-family:'Fredoka One',cursive;font-size:1rem;color:#fff;
+}
+.device-confirm-badge.coral{background:var(--coral);}
+.device-confirm-badge.amber{background:var(--amber);}
+.device-challenge{
+  text-align:center;font-weight:800;font-size:.92rem;
+  padding:.5rem;border-radius:.8rem;
+}
+.device-challenge.coral{color:var(--coral);background:var(--coral-light);}
+.device-challenge.amber{color:var(--amber-dark);background:var(--amber-light);}
+
+/* ─── ALL DEVICES SUMMARY ──────────────────────────── */
+.summary-banner{
+  padding:.65rem 1rem;text-align:center;
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  margin-bottom:1rem;border-radius:.8rem;
+}
+.summary-banner.coral{background:var(--coral-light);color:var(--coral-dark);border:1.5px solid var(--coral);}
+.summary-banner.amber{background:var(--amber-light);color:var(--amber-dark);border:1.5px solid var(--amber);}
+
+/* ─── MORE DEVICES BONUS CARDS ─────────────────────── */
+.more-devices-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:.8rem;}
+.more-output-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:.8rem;}
+.more-card{border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.10);border:2px solid;transition:transform .28s,box-shadow .28s;background:#fff;}
+.more-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.18);}
+.more-card.coral{border-color:var(--coral);}
+.more-card.amber{border-color:var(--amber);}
+.more-card img{width:100%;height:140px;object-fit:contain;display:block;background:#f7f7f7;padding:.4rem;}
+.more-card .mc-label{padding:.55rem .6rem .2rem;font-family:'Fredoka One',cursive;font-size:.95rem;text-align:center;}
+.more-card.coral .mc-label{color:var(--coral);}
+.more-card.amber .mc-label{color:var(--amber-dark);}
+.more-card .mc-use{padding:0 .6rem .6rem;font-size:.77rem;font-weight:600;color:var(--text-gray);text-align:center;line-height:1.3;}
+.bonus-note{margin-top:.9rem;border-radius:.9rem;padding:.75rem 1rem;text-align:center;font-weight:700;font-size:.88rem;}
+.bonus-note.coral{background:var(--coral-light);color:var(--coral-dark);border:1.5px solid var(--coral);}
+.bonus-note.amber{background:var(--amber-light);color:var(--amber-dark);border:1.5px solid var(--amber);}
+
+/* ─── UTILITIES ────────────────────────────────────── */
+.text-center{text-align:center;}
+.mt1{margin-top:.6rem;}
+.mt2{margin-top:1.2rem;}
+.emoji-lg{font-size:2.5rem;}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.fade-up{animation:fadeUp .5s ease both;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.pulse{animation:pulse 2s ease-in-out infinite;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:10px;}
+
+/* ─── MINI GAME ────────────────────────────────────── */
+.game-board {
+  display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+  background: var(--dark-bg); border-radius: 1.5rem; padding: 2rem;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+  margin-top: 1rem; border: 4px solid var(--teal-mid);
+}
+.game-score { font-family: 'Fredoka One', cursive; font-size: 1.8rem; color: var(--yellow); }
+.game-stage {
+  width: 250px; height: 250px; background: white; border-radius: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3); padding: 1rem; position: relative;
+  transition: transform 0.2s; border: 4px solid white;
+}
+.game-stage img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.game-device-name {
+  position: absolute; bottom: -20px; background: var(--teal-dark); color: white;
+  padding: 0.4rem 1rem; border-radius: 2rem; font-weight: 800; border: 3px solid white;
+}
+.game-controls { display: flex; gap: 2rem; margin-top: 1.5rem; width: 100%; justify-content: center; }
+.game-btn {
+  flex: 1; max-width: 200px; padding: 1.2rem; border-radius: 1.5rem; border: none;
+  font-family: 'Fredoka One', cursive; font-size: 1.5rem; color: white; cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s; display: flex; flex-direction: column; align-items: center;
+}
+.game-btn:active { transform: scale(0.95); }
+.btn-input { background: var(--coral); box-shadow: 0 8px 0 var(--coral-dark); }
+.btn-input:active { box-shadow: 0 0 0 var(--coral-dark); transform: translateY(8px); }
+.btn-output { background: var(--amber); box-shadow: 0 8px 0 var(--amber-dark); }
+.btn-output:active { box-shadow: 0 0 0 var(--amber-dark); transform: translateY(8px); }
+.game-win { text-align: center; display: none; flex-direction: column; gap: 1rem; }
+
+@keyframes shake-error {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-15px); }
+  40%, 80% { transform: translateX(15px); }
+}
+.shake-error { animation: shake-error 0.4s ease-in-out; border-color: var(--coral) !important; }
+.pulse-success { transform: scale(1.1); border-color: var(--green) !important; box-shadow: 0 0 30px var(--green); }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<div id="top-nav">
+  <div id="slide-counter">1 / 19</div>
+  <div id="slide-title-nav">Input & Output</div>
+  <div id="nav-dots"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SLIDES
+═══════════════════════════════════════════════════ -->
+<div id="slides-wrapper">
+
+<!-- ── SLIDE 1: TITLE ────────────────────────────── -->
+<div class="slide dark-slide active" data-title="Welcome!">
+  <div class="title-layout">
+    <div class="title-left-panel">
+      <div class="title-icons-row">
+        <div class="title-icon-box pulse">⌨️</div>
+        <div class="title-icon-box pulse" style="animation-delay:.3s">🖥️</div>
+        <div class="title-icon-box pulse" style="animation-delay:.6s">🔊</div>
+      </div>
+      <div class="title-divider"></div>
+      <div class="title-session">Session 2</div>
+      <div class="title-main">Input &amp;<br>Output</div>
+      <div class="title-sub">Ages 6–10 &nbsp;·&nbsp; Online via Zoom</div>
+    </div>
+    <div class="title-right">
+      <div class="title-question">
+        <div class="title-q-text">How do we talk to a computer? 🤔</div>
+        <div class="title-q-answer">And how does it talk back to us?</div>
+      </div>
+      <div class="title-question">
+        <div class="title-q-text">Today you will learn about…</div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem;">
+          <span class="badge coral">INPUT</span>
+          <span class="badge amber">OUTPUT</span>
+          <span class="badge teal">Devices</span>
+          <span class="badge yellow">Quiz</span>
+        </div>
+      </div>
+      <div class="stars-row">⭐⭐⭐</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 2: AGENDA ───────────────────────────── -->
+<div class="slide dark-slide" data-title="Today's Agenda">
+  <div class="big-title yellow" style="margin-bottom:1.2rem">📋 What We Will Do Today</div>
+  <div class="agenda-list">
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--teal)">1</div><div><div class="agenda-label" style="color:var(--teal-light)">🧠 Recap</div><div class="agenda-desc">Quick memory check from Session 1</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--coral)">2</div><div><div class="agenda-label" style="color:#FEE8E9">🎤 INPUT</div><div class="agenda-desc">Learn what Input means + 4 input devices</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--amber)">3</div><div><div class="agenda-label" style="color:#FEF3E9">🔊 OUTPUT</div><div class="agenda-desc">Learn what Output means + 3 output devices</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--green)">4</div><div><div class="agenda-label" style="color:var(--green-light)">🙋 Activity</div><div class="agenda-desc">Raise your hands — Input or Output?</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--teal-mid)">5</div><div><div class="agenda-label" style="color:var(--teal-light)">⭐ Quiz</div><div class="agenda-desc">4 quick questions in the chat</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--amber-dark)">6</div><div><div class="agenda-label" style="color:var(--amber-light)">🏠 Homework</div><div class="agenda-desc">Sort and draw input & output devices</div></div></div>
+  </div>
+</div>
+
+<!-- ── SLIDE 3: RECAP ────────────────────────────── -->
+<div class="slide light-slide" data-title="Quick Recap">
+  <div class="slide-header teal">🧠 Quick Recap — What Did We Learn Last Time?</div>
+  <div class="slide-body" style="display:flex;flex-direction:column;gap:.8rem;padding-top:1.2rem;">
+    <div class="recap-row fade-up" style="animation-delay:.1s">
+      <div class="recap-q">What is a computer?</div>
+      <div class="recap-arrow">→</div>
+      <div class="recap-a">A smart machine that follows instructions!</div>
+    </div>
+    <div class="recap-row fade-up" style="animation-delay:.2s">
+      <div class="recap-q">What part helps us TYPE?</div>
+      <div class="recap-arrow">→</div>
+      <div class="recap-a">The Keyboard!</div>
+    </div>
+    <div class="recap-row fade-up" style="animation-delay:.3s">
+      <div class="recap-q">What part helps us SEE?</div>
+      <div class="recap-arrow">→</div>
+      <div class="recap-a">The Monitor!</div>
+    </div>
+    <div class="recap-row fade-up" style="animation-delay:.4s">
+      <div class="recap-q">What part helps us CLICK?</div>
+      <div class="recap-arrow">→</div>
+      <div class="recap-a">The Mouse!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 4: HOW DO WE TALK? ──────────────────── -->
+<div class="slide dark-slide" data-title="How We Talk to Computers">
+  <div class="big-title yellow text-center">How Do We Talk to a Computer? 🤔</div>
+  <div class="subtitle light text-center">And how does the computer talk BACK to us?</div>
+  <div class="split-panel" style="margin-top:1.4rem;">
+    <div class="split-box">
+      <div class="emoji">👤</div>
+      <div class="split-name" style="color:var(--teal-light)">YOU</div>
+      <div class="split-sub">Type, click, speak, take a photo…</div>
+    </div>
+    <div class="split-mid">
+      <span class="arrow" style="color:var(--coral)">→</span>
+      <span class="label coral">INPUT</span>
+      <br/>
+      <span class="label amber">OUTPUT</span>
+      <span class="arrow" style="color:var(--amber)">←</span>
+    </div>
+    <div class="split-box">
+      <div class="emoji">🖥️</div>
+      <div class="split-name" style="color:var(--teal-light)">COMPUTER</div>
+      <div class="split-sub">Show on screen, play sound, print on paper…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 5: WHAT IS INPUT? ───────────────────── -->
+<div class="slide light-slide" data-title="What is INPUT?">
+  <div class="slide-header coral">🎤 What is INPUT?</div>
+  <div class="slide-body">
+    <div class="def-panel">
+      <div class="def-left coral">
+        <div class="def-word">INPUT</div>
+        <div style="font-size:3rem">📥</div>
+        <div class="def-desc">Input = Sending information TO the computer</div>
+      </div>
+      <div class="def-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">➡️</span>YOU give information TO the computer</li>
+          <li><span class="bullet-icon">➡️</span>You tell the computer what to do</li>
+          <li><span class="bullet-icon">✅</span>The computer LISTENS and receives it</li>
+        </ul>
+        <div class="analogy-box coral">
+          <span class="analogy-icon">💡</span>
+          Think of it like talking to a friend! When YOU speak — that is INPUT. You are giving information to someone.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 6: KEYBOARD ──────────────────────────── -->
+<div class="slide light-slide" data-title="Keyboard — Input">
+  <div class="slide-header coral">⌨️ Input Device 1 — The Keyboard</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame coral">
+        <img src="img_keyboard.png" alt="Colorful children's keyboard"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">⌨️</span>Types letters A, B, C…</li>
+          <li><span class="bullet-icon">⌨️</span>Types numbers 1, 2, 3…</li>
+          <li><span class="bullet-icon">⌨️</span>Writes words and sentences</li>
+          <li><span class="bullet-icon">⌨️</span>Has special keys: Enter, Space, Delete</li>
+        </ul>
+        <div class="device-confirm-badge coral">INPUT ✓ — It sends typing TO the computer!</div>
+        <div class="device-challenge coral">🎯 Find the letter M on your keyboard right now!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 7: MOUSE ─────────────────────────────── -->
+<div class="slide light-slide" data-title="Mouse — Input">
+  <div class="slide-header coral">🖱️ Input Device 2 — The Mouse</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame coral">
+        <img src="img_mouse.png" alt="Colorful children's mouse"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">🖱️</span>Single click — selects items</li>
+          <li><span class="bullet-icon">🖱️</span>Double click — opens files &amp; programs</li>
+          <li><span class="bullet-icon">🖱️</span>Right click — shows extra options</li>
+          <li><span class="bullet-icon">🖱️</span>Scroll wheel — moves up and down</li>
+        </ul>
+        <div class="device-confirm-badge coral">INPUT ✓ — It sends clicks &amp; movement TO the computer!</div>
+        <div class="device-challenge coral">🎯 Show me: left click, then right click!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 8: MICROPHONE ────────────────────────── -->
+<div class="slide light-slide" data-title="Microphone — Input">
+  <div class="slide-header coral">🎤 Input Device 3 — The Microphone</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame coral">
+        <img src="img_microphone.png" alt="Colorful microphone"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">🎤</span>Records your voice to the computer</li>
+          <li><span class="bullet-icon">🎤</span>Used in video calls (like Zoom!)</li>
+          <li><span class="bullet-icon">🎤</span>Used to give voice commands</li>
+          <li><span class="bullet-icon">🎤</span>Used to make recordings &amp; podcasts</li>
+        </ul>
+        <div class="device-confirm-badge coral">INPUT ✓ — It sends your voice TO the computer!</div>
+        <div class="device-challenge coral">🎯 Right now you are using a microphone!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 9: CAMERA ────────────────────────────── -->
+<div class="slide light-slide" data-title="Camera — Input">
+  <div class="slide-header coral">📷 Input Device 4 — The Camera / Webcam</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame coral">
+        <img src="img_camera.png" alt="Colorful children's camera"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">📷</span>Takes photos and sends them to computer</li>
+          <li><span class="bullet-icon">📷</span>Records videos for the computer</li>
+          <li><span class="bullet-icon">📷</span>Used in video calls to show your face</li>
+          <li><span class="bullet-icon">📷</span>Used to scan documents and QR codes</li>
+        </ul>
+        <div class="device-confirm-badge coral">INPUT ✓ — It sends pictures &amp; video TO the computer!</div>
+        <div class="device-challenge coral">🎯 Your webcam is on right now — wave hello! 👋</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 10: ALL INPUT DEVICES ───────────────── -->
+<div class="slide light-slide" data-title="All Input Devices">
+  <div class="slide-header coral">🎯 All INPUT Devices — Can You Name Them?</div>
+  <div class="slide-body">
+    <div class="summary-banner coral">INPUT = Sending information TO the computer</div>
+    <div class="grid-4">
+      <div class="device-card input">
+        <img src="img_keyboard.png" alt="Keyboard"/>
+        <div class="dc-label">Keyboard</div>
+        <div class="dc-tag" style="background:var(--coral)">We type letters &amp; numbers</div>
+      </div>
+      <div class="device-card input">
+        <img src="img_mouse.png" alt="Mouse"/>
+        <div class="dc-label">Mouse</div>
+        <div class="dc-tag" style="background:var(--coral)">We click and move things</div>
+      </div>
+      <div class="device-card input">
+        <img src="img_microphone.png" alt="Microphone"/>
+        <div class="dc-label">Microphone</div>
+        <div class="dc-tag" style="background:var(--coral)">We record our voice</div>
+      </div>
+      <div class="device-card input">
+        <img src="img_camera.png" alt="Camera"/>
+        <div class="dc-label">Camera</div>
+        <div class="dc-tag" style="background:var(--coral)">We send photos &amp; video</div>
+      </div>
+    </div>
+    <div class="device-challenge coral mt2" style="padding:.65rem 1rem;border-radius:.8rem;text-align:center;background:var(--coral-light);">👉 Point at each one — can you say what it does?</div>
+  </div>
+</div>
+
+<!-- ── SLIDE 11 BONUS: MORE INPUT DEVICES ─────────── -->
+<div class="slide light-slide" data-title="More Input Devices! 🎮">
+  <div class="slide-header coral">🏠 Wait — There Are MANY More Input Devices!</div>
+  <div class="slide-body">
+    <div class="summary-banner coral">You use INPUT devices every day at home — even without a computer! 🎮📱</div>
+    <div class="more-devices-grid">
+      <div class="more-card coral">
+        <img src="img_remote.png" alt="TV Remote"/>
+        <div class="mc-label">TV Remote 📺</div>
+        <div class="mc-use">Press buttons to tell the TV what to show — INPUT!</div>
+      </div>
+      <div class="more-card coral">
+        <img src="img_gamepad.png" alt="PlayStation Controller"/>
+        <div class="mc-label">Game Controller 🎮</div>
+        <div class="mc-use">Buttons send your moves to the console — INPUT!</div>
+      </div>
+      <div class="more-card coral">
+        <img src="img_tablet.png" alt="Tablet Touchscreen"/>
+        <div class="mc-label">Touch Screen 📱</div>
+        <div class="mc-use">Your finger tap sends info to the tablet — INPUT!</div>
+      </div>
+      <div class="more-card coral">
+        <img src="img_touchscreen.png" alt="Touchscreen"/>
+        <div class="mc-label">Voice Command 🗣️</div>
+        <div class="mc-use">"Hey Siri / Alexa!" — your voice is INPUT to a smart device!</div>
+      </div>
+    </div>
+    <div class="bonus-note coral">💡 Any time YOU send information to a machine — that is INPUT. The machine listens to you!</div>
+  </div>
+</div>
+
+<!-- ── SLIDE 12: WHAT IS OUTPUT? ─────────────────── -->
+<div class="slide light-slide" data-title="What is OUTPUT?">
+  <div class="slide-header amber">🔊 What is OUTPUT?</div>
+  <div class="slide-body">
+    <div class="def-panel">
+      <div class="def-left amber">
+        <div class="def-word">OUTPUT</div>
+        <div style="font-size:3rem">📤</div>
+        <div class="def-desc">Output = Receiving information FROM the computer</div>
+      </div>
+      <div class="def-right">
+        <ul class="bullet-list amber">
+          <li><span class="bullet-icon">⬅️</span>The computer gives information TO YOU</li>
+          <li><span class="bullet-icon">⬅️</span>The computer shows or plays its answer</li>
+          <li><span class="bullet-icon">✅</span>YOU see, hear, or read the result</li>
+        </ul>
+        <div class="analogy-box amber">
+          <span class="analogy-icon">💡</span>
+          Think of it like a friend replying to you! When THEY speak back — that is OUTPUT. The computer is giving you information.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 12: MONITOR ──────────────────────────── -->
+<div class="slide light-slide" data-title="Monitor — Output">
+  <div class="slide-header amber">🖥️ Output Device 1 — The Monitor</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame amber">
+        <img src="img_monitor.png" alt="Computer monitor with rainbow display"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list amber">
+          <li><span class="bullet-icon">🖥️</span>Shows pictures and photos</li>
+          <li><span class="bullet-icon">🖥️</span>Plays videos and movies</li>
+          <li><span class="bullet-icon">🖥️</span>Displays games on screen</li>
+          <li><span class="bullet-icon">🖥️</span>Shows text, words and numbers</li>
+        </ul>
+        <div class="device-confirm-badge amber">OUTPUT ✓ — It shows information FROM the computer!</div>
+        <div class="device-challenge amber">🤔 What are YOU looking at right now?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 13: SPEAKERS ─────────────────────────── -->
+<div class="slide light-slide" data-title="Speakers — Output">
+  <div class="slide-header amber">🔊 Output Device 2 — Speakers</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame amber">
+        <img src="img_speakers.png" alt="Colorful children's speakers"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list amber">
+          <li><span class="bullet-icon">🔊</span>Plays music and songs</li>
+          <li><span class="bullet-icon">🔊</span>Plays sounds in games</li>
+          <li><span class="bullet-icon">🔊</span>Lets you hear people talk in video calls</li>
+          <li><span class="bullet-icon">🔊</span>Reads out text from the computer</li>
+        </ul>
+        <div class="device-confirm-badge amber">OUTPUT ✓ — It plays sounds FROM the computer!</div>
+        <div class="device-challenge amber">🎵 You can hear my voice right now — that is a speaker!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 14: PRINTER ──────────────────────────── -->
+<div class="slide light-slide" data-title="Printer — Output">
+  <div class="slide-header amber">🖨️ Output Device 3 — The Printer</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame amber">
+        <img src="img_printer.png" alt="Colorful printer"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list amber">
+          <li><span class="bullet-icon">🖨️</span>Prints documents on paper</li>
+          <li><span class="bullet-icon">🖨️</span>Prints homework and school work</li>
+          <li><span class="bullet-icon">🖨️</span>Prints photos and pictures</li>
+          <li><span class="bullet-icon">🖨️</span>Turns computer information into paper!</li>
+        </ul>
+        <div class="device-confirm-badge amber">OUTPUT ✓ — It brings information OUT of the computer!</div>
+        <div class="device-challenge amber">🤔 Have you ever used a printer at home or school?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 15: ALL OUTPUT DEVICES ──────────────── -->
+<div class="slide light-slide" data-title="All Output Devices">
+  <div class="slide-header amber">🎯 All OUTPUT Devices — Can You Name Them?</div>
+  <div class="slide-body">
+    <div class="summary-banner amber">OUTPUT = Receiving information FROM the computer</div>
+    <div class="grid-3">
+      <div class="device-card output">
+        <img src="img_monitor.png" alt="Monitor"/>
+        <div class="dc-label">Monitor</div>
+        <div class="dc-tag" style="background:var(--amber)">We SEE pictures and text</div>
+      </div>
+      <div class="device-card output">
+        <img src="img_speakers.png" alt="Speakers"/>
+        <div class="dc-label">Speakers</div>
+        <div class="dc-tag" style="background:var(--amber)">We HEAR sound and music</div>
+      </div>
+      <div class="device-card output">
+        <img src="img_printer.png" alt="Printer"/>
+        <div class="dc-label">Printer</div>
+        <div class="dc-tag" style="background:var(--amber)">We READ pages on paper</div>
+      </div>
+    </div>
+    <div class="device-challenge amber mt2" style="padding:.65rem 1rem;border-radius:.8rem;text-align:center;background:var(--amber-light);">👉 Point at each one — can you say what it does?</div>
+  </div>
+</div>
+
+<!-- ── SLIDE 16 BONUS: MORE OUTPUT DEVICES ─────────── -->
+<div class="slide light-slide" data-title="More Output Devices! 📺">
+  <div class="slide-header amber">🏠 Wait — There Are MANY More Output Devices!</div>
+  <div class="slide-body">
+    <div class="summary-banner amber">The computer talks back to you in lots of ways — even at home! 📺🎧</div>
+    <div class="more-output-grid">
+      <div class="more-card amber">
+        <img src="img_headphones.png" alt="Headphones"/>
+        <div class="mc-label">Headphones 🎧</div>
+        <div class="mc-use">Sound comes OUT of the device — you hear music or calls. That's OUTPUT!</div>
+      </div>
+      <div class="more-card amber">
+        <img src="img_tv.png" alt="Television"/>
+        <div class="mc-label">Television 📺</div>
+        <div class="mc-use">Your TV shows pictures &amp; plays sound — it is a big OUTPUT device!</div>
+      </div>
+      <div class="more-card amber">
+        <img src="img_smartspeaker.png" alt="Smart Speaker"/>
+        <div class="mc-label">Smart Speaker 🔔</div>
+        <div class="mc-use">Alexa / Google Home plays music &amp; talks back — that's OUTPUT!</div>
+      </div>
+    </div>
+    <div class="bonus-note amber">💡 Any time a machine gives information BACK to you — with sound, light or a picture — that is OUTPUT!</div>
+  </div>
+</div>
+
+<!-- ── SLIDE 17: THE SIMPLE RULE ─────────────────── -->
+<div class="slide dark-slide" data-title="The Simple Rule">
+  <div class="big-title yellow text-center">The Simple Rule 💡</div>
+  <div class="rule-panel" style="margin-top:1.2rem;">
+    <div class="rule-box coral">
+      <div style="font-size:2.5rem">📥</div>
+      <div class="rule-word">INPUT</div>
+      <div class="rule-desc">WE tell the computer something</div>
+      <div class="rule-devices">Keyboard · Mouse · Mic · Camera</div>
+    </div>
+    <div class="rule-vs">⟷</div>
+    <div class="rule-box amber">
+      <div style="font-size:2.5rem">📤</div>
+      <div class="rule-word">OUTPUT</div>
+      <div class="rule-desc">The computer tells US something</div>
+      <div class="rule-devices">Monitor · Speakers · Printer</div>
+    </div>
+  </div>
+  <div class="rule-footer">
+    Easy way to remember: INPUT goes IN &nbsp;—&nbsp; OUTPUT comes OUT! 🎯
+  </div>
+</div>
+
+<!-- ── SLIDE 17: ACTIVITY ─────────────────────────── -->
+<div class="slide light-slide" data-title="Activity — Raise Your Hands!">
+  <div class="slide-header teal">🙋 Activity — Raise Your Hands!</div>
+  <div class="slide-body">
+    <div class="activity-instruction">✋ ONE hand up = INPUT &nbsp;&nbsp;&nbsp; ✋✋ TWO hands up = OUTPUT<br/><small style="font-size:.75rem;font-family:'Nunito',sans-serif;font-weight:600">Hover over each card to reveal the answer!</small></div>
+    <div class="activity-grid">
+      <div class="activity-card coral">
+        <img src="img_keyboard.png" alt="Keyboard"/>
+        <div class="ac-name">Keyboard</div>
+        <div class="ac-answer">✋ INPUT</div>
+      </div>
+      <div class="activity-card amber">
+        <img src="img_monitor.png" alt="Monitor"/>
+        <div class="ac-name">Monitor</div>
+        <div class="ac-answer">✋✋ OUTPUT</div>
+      </div>
+      <div class="activity-card coral">
+        <img src="img_microphone.png" alt="Microphone"/>
+        <div class="ac-name">Microphone</div>
+        <div class="ac-answer">✋ INPUT</div>
+      </div>
+      <div class="activity-card amber">
+        <img src="img_speakers.png" alt="Speakers"/>
+        <div class="ac-name">Speakers</div>
+        <div class="ac-answer">✋✋ OUTPUT</div>
+      </div>
+      <div class="activity-card coral">
+        <img src="img_camera.png" alt="Camera"/>
+        <div class="ac-name">Camera</div>
+        <div class="ac-answer">✋ INPUT</div>
+      </div>
+      <div class="activity-card amber">
+        <img src="img_printer.png" alt="Printer"/>
+        <div class="ac-name">Printer</div>
+        <div class="ac-answer">✋✋ OUTPUT</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 18: QUIZ ──────────────────────────────── -->
+<div class="slide dark-slide" data-title="Quiz Time ⭐">
+  <div class="big-title yellow text-center">⭐ Quiz Time — Are You Ready?</div>
+  <div class="subtitle light text-center">Type INPUT or OUTPUT in the chat — GO! 🚀</div>
+  <div class="quiz-list" style="margin-top:1.2rem;" id="quizList">
+    <div class="quiz-item" data-qcolor="var(--coral)" data-hcolor="var(--coral-dark)">
+      <div class="quiz-q" style="background:rgba(249,97,103,.55)">1. Is a keyboard INPUT or OUTPUT?</div>
+      <div class="quiz-hint" style="background:rgba(249,97,103,.35)">Answer: INPUT ✓</div>
+    </div>
+    <div class="quiz-item" data-qcolor="var(--amber)" data-hcolor="var(--amber-dark)">
+      <div class="quiz-q" style="background:rgba(244,162,97,.5)">2. Is a monitor INPUT or OUTPUT?</div>
+      <div class="quiz-hint" style="background:rgba(244,162,97,.35)">Answer: OUTPUT ✓</div>
+    </div>
+    <div class="quiz-item" data-qcolor="var(--teal-mid)" data-hcolor="var(--teal-dark)">
+      <div class="quiz-q" style="background:rgba(93,184,196,.45)">3. What does a microphone do?</div>
+      <div class="quiz-hint" style="background:rgba(93,184,196,.3)">Sends voice TO the computer</div>
+    </div>
+    <div class="quiz-item" data-qcolor="var(--green)" data-hcolor="#1e8f3a">
+      <div class="quiz-q" style="background:rgba(45,198,83,.4)">4. What does a printer do?</div>
+      <div class="quiz-hint" style="background:rgba(45,198,83,.25)">Prints information OUT of the computer</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:1rem;font-size:1rem;color:var(--teal-light);">🎉 Amazing — you all learned so much today!</div>
+  <div style="text-align:center;margin-top:.6rem;">
+    <button class="nav-btn" id="revealQuiz" style="background:linear-gradient(135deg,var(--yellow),var(--amber));color:var(--dark-bg);margin:0 auto;">✨ Reveal Answers</button>
+  </div>
+</div>
+
+<!-- ── SLIDE 19: MINI GAME ─────────────────────────── -->
+<div class="slide dark-slide" data-title="Mini-Game! 🎮">
+  <div class="big-title yellow text-center">🎮 Game Time: Sort It Out!</div>
+  <div class="subtitle light text-center">Is it INPUT or OUTPUT? Tap the correct button!</div>
+  
+  <div class="game-board" id="gameBoard">
+    <div class="game-score" id="gameScore">Score: 0 / 5</div>
+    <div class="game-stage" id="gameStage">
+      <img id="gameImage" src="" alt="Device"/>
+      <div class="game-device-name" id="gameDeviceName">Device Name</div>
+    </div>
+    <div class="game-controls">
+      <button class="game-btn btn-input" onclick="handleGameGuess('input')">
+        <span style="font-size:2rem">📥</span> INPUT
+      </button>
+      <button class="game-btn btn-output" onclick="handleGameGuess('output')">
+        <span style="font-size:2rem">📤</span> OUTPUT
+      </button>
+    </div>
+  </div>
+
+  <div class="game-win" id="gameWinScreen">
+    <div style="font-size:5rem">🏆</div>
+    <div class="big-title yellow">YOU WIN!</div>
+    <div style="font-size:1.5rem; color: white;">Amazing job! You are a computer expert!</div>
+    <button class="nav-btn" onclick="resetGame()" style="margin:1rem auto; background: var(--teal); color: white;">Play Again 🔄</button>
+  </div>
+</div>
+
+<!-- ── SLIDE 20: HOMEWORK ─────────────────────────── -->
+<div class="slide light-slide" data-title="Homework 📝">
+  <div class="slide-header teal">📝 Homework + See You Next Time!</div>
+  <div class="slide-body">
+    <div class="hw-panel">
+      <div class="hw-card">
+        <div class="hw-card-head coral">✏️ Task 1 — Sort the Devices</div>
+        <div class="hw-card-body">
+          <p style="font-size:.9rem;font-weight:600;color:var(--text-dark);margin-bottom:.8rem;">Make two columns on paper:<br/><strong>INPUT</strong> and <strong>OUTPUT</strong><br/>Then write each device under the right column:</p>
+          <div>
+            <span class="device-pill">Keyboard</span>
+            <span class="device-pill">Mouse</span>
+            <span class="device-pill">Microphone</span>
+            <span class="device-pill">Camera</span>
+            <span class="device-pill" style="background:var(--amber-light);border-color:var(--amber)">Monitor</span>
+            <span class="device-pill" style="background:var(--amber-light);border-color:var(--amber)">Speakers</span>
+            <span class="device-pill" style="background:var(--amber-light);border-color:var(--amber)">Printer</span>
+          </div>
+        </div>
+      </div>
+      <div class="hw-card">
+        <div class="hw-card-head teal">🎨 Task 2 — Draw &amp; Label</div>
+        <div class="hw-card-body">
+          <p style="font-size:.9rem;font-weight:600;color:var(--text-dark);line-height:1.6;">Draw your computer setup at home.<br/>Label each part as INPUT or OUTPUT.</p>
+          <div style="margin-top:.8rem;background:var(--amber-light);border:1.5px dashed var(--amber);border-radius:.8rem;padding:.7rem;font-size:.88rem;font-weight:700;color:var(--amber-dark);">
+            ⭐ Bonus star if you can name 3 input AND 3 output devices from memory!
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hw-teaser">
+      🚀 Next Session: How does a computer THINK? We will learn about the CPU and Memory!
+    </div>
+    <div style="text-align:center;margin-top:1rem;font-size:1.8rem" class="pulse">🎉 Well done! Amazing work today! 🎉</div>
+  </div>
+</div>
+
+</div><!-- /slides-wrapper -->
+
+<!-- ── NAVIGATION BUTTONS ──────────────────────────── -->
+<div id="nav-buttons">
+  <button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Back
+  </button>
+  <button class="nav-btn" id="btn-next" onclick="changeSlide(1)">
+    Next
+    <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+  </button>
+</div>
+
+<script>
+// ─── STATE ──────────────────────────────────────────
+const slides     = Array.from(document.querySelectorAll('.slide'));
+const total      = slides.length;
+let current      = 0;
+
+// ─── DOTS ───────────────────────────────────────────
+const dotsContainer = document.getElementById('nav-dots');
+slides.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsContainer.appendChild(d);
+});
+
+// ─── PROGRESS + COUNTER ─────────────────────────────
+function updateUI() {
+  document.getElementById('progress-bar').style.width = ((current+1)/total*100)+'%';
+  document.getElementById('slide-counter').textContent = (current+1)+' / '+total;
+  document.getElementById('slide-title-nav').textContent = slides[current].dataset.title || '';
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===current));
+  document.getElementById('btn-prev').style.opacity = current === 0 ? '0.35' : '1';
+  document.getElementById('btn-next').textContent = current === total-1 ? '🎉 Done!' : 'Next';
+  document.getElementById('btn-next').innerHTML = current === total-1 
+    ? '🎉 Done!' 
+    : 'Next <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;stroke-width:2.5;fill:none"><polyline points="9 6 15 12 9 18"/></svg>';
+}
+
+// ─── SLIDE TRANSITION ───────────────────────────────
+function goTo(n) {
+  if (n < 0 || n >= total) return;
+  slides[current].classList.remove('active');
+  current = n;
+  slides[current].classList.add('active');
+  // re-trigger animation
+  const s = slides[current];
+  s.style.animation = 'none';
+  s.offsetHeight; // reflow
+  s.style.animation = '';
+  updateUI();
+
+  // trigger quiz reveal animation when on quiz slide
+  if (slides[current].dataset.title?.includes('Quiz')) {
+    document.querySelectorAll('.quiz-item').forEach((q,i) => {
+      setTimeout(() => q.classList.add('revealed'), i * 250);
+    });
+  }
+  // confetti on last slide
+  if (current === total - 1) launchConfetti();
+}
+
+function changeSlide(dir) { goTo(current + dir); }
+
+// ─── KEYBOARD NAVIGATION ────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+  if (e.key === 'ArrowLeft')  changeSlide(-1);
+});
+
+// ─── TOUCH / SWIPE ──────────────────────────────────
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) changeSlide(dx < 0 ? 1 : -1);
+});
+
+// ─── QUIZ REVEAL BUTTON ─────────────────────────────
+document.getElementById('revealQuiz')?.addEventListener('click', function() {
+  document.querySelectorAll('.quiz-item').forEach((q,i) => {
+    setTimeout(() => q.classList.add('revealed'), i * 200);
+  });
+  launchConfetti();
+  this.textContent = '✅ Revealed!';
+});
+
+// ─── CONFETTI ───────────────────────────────────────
+function launchConfetti() {
+  const colors = ['#F96167','#F4A261','#028090','#FFD166','#2DC653','#5DB8C4','#FEE8E9'];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.left  = Math.random()*100+'vw';
+      el.style.background = colors[Math.floor(Math.random()*colors.length)];
+      el.style.width  = (8+Math.random()*8)+'px';
+      el.style.height = (8+Math.random()*8)+'px';
+      el.style.borderRadius = Math.random()>.5 ? '50%' : '2px';
+      el.style.animationDuration = (1.5+Math.random()*2.5)+'s';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, i * 40);
+  }
+}
+
+// ─── MINI GAME LOGIC ────────────────────────────────
+const gameItems = [
+  { name: 'Keyboard', type: 'input', img: 'img_keyboard.png' },
+  { name: 'Monitor', type: 'output', img: 'img_monitor.png' },
+  { name: 'Microphone', type: 'input', img: 'img_microphone.png' },
+  { name: 'Printer', type: 'output', img: 'img_printer.png' },
+  { name: 'Mouse', type: 'input', img: 'img_mouse.png' },
+  { name: 'Speakers', type: 'output', img: 'img_speakers.png' },
+  { name: 'Camera', type: 'input', img: 'img_camera.png' }
+];
+
+let activeGameItems = [];
+let currentGameIndex = 0;
+let gameScore = 0;
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function initGame() {
+  activeGameItems = [...gameItems];
+  shuffle(activeGameItems);
+  activeGameItems = activeGameItems.slice(0, 5); // 5 items per game
+  currentGameIndex = 0;
+  gameScore = 0;
+  
+  document.getElementById('gameBoard').classList.remove('hidden');
+  document.getElementById('gameWinScreen').style.display = 'none';
+  loadGameItem();
+}
+
+function loadGameItem() {
+  const item = activeGameItems[currentGameIndex];
+  document.getElementById('gameScore').textContent = `Score: ${gameScore} / 5`;
+  document.getElementById('gameImage').src = item.img;
+  document.getElementById('gameDeviceName').textContent = item.name;
+  
+  const stage = document.getElementById('gameStage');
+  stage.className = 'game-stage'; // reset classes
+}
+
+function handleGameGuess(guessType) {
+  const item = activeGameItems[currentGameIndex];
+  const stage = document.getElementById('gameStage');
+  
+  if (guessType === item.type) {
+    // Correct
+    stage.classList.add('pulse-success');
+    gameScore++;
+    document.getElementById('gameScore').textContent = `Score: ${gameScore} / 5`;
+    
+    setTimeout(() => {
+      currentGameIndex++;
+      if (currentGameIndex >= activeGameItems.length) {
+        winGame();
+      } else {
+        loadGameItem();
+      }
+    }, 600);
+  } else {
+    // Incorrect
+    stage.classList.remove('shake-error');
+    void stage.offsetWidth; // trigger reflow
+    stage.classList.add('shake-error');
+  }
+}
+
+function winGame() {
+  document.getElementById('gameBoard').classList.add('hidden');
+  document.getElementById('gameWinScreen').style.display = 'flex';
+  launchConfetti();
+}
+
+function resetGame() {
+  initGame();
+}
+
+// Initialize the game
+initGame();
+
+// ─── INIT ────────────────────────────────────────────
+updateUI();
+</script>
+</body>
+</html>

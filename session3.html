@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Session 3 — Hardware &amp; Software | Kids Computer Class</title>
+<meta name="description" content="Learn the difference between Hardware and Software in a fun, interactive lesson for kids ages 6–9."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet"/>
+<style>
+/* ─── RESET & BASE ─────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#028090;--teal-dark:#015F6B;--teal-light:#E0F4F6;--teal-mid:#5DB8C4;
+  --coral:#F96167;--coral-light:#FEE8E9;--coral-dark:#C73D42;
+  --amber:#F4A261;--amber-light:#FEF3E9;--amber-dark:#C97D3C;
+  --white:#FFFFFF;--off-white:#F7FBFC;
+  --dark-bg:#021B1E;--dark-bg2:#033740;
+  --text-dark:#0D2B30;--text-gray:#5A7A80;
+  --green:#2DC653;--green-light:#E6FAF0;
+  --yellow:#FFD166;--navy:#1A3A4A;
+  /* New: purple/indigo for Software theme */
+  --purple:#7C3AED;--purple-light:#EDE9FE;--purple-dark:#5B21B6;
+  --indigo:#6366F1;--indigo-light:#E0E7FF;--indigo-dark:#4338CA;
+  --radius:1.2rem;--shadow:0 8px 32px rgba(0,0,0,.14);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--dark-bg);
+  color:var(--text-dark);
+  min-height:100vh;
+  overflow:hidden;
+}
+
+/* ─── PROGRESS BAR ─────────────────────────────────── */
+#progress-bar{
+  position:fixed;top:0;left:0;height:5px;
+  background:linear-gradient(90deg,var(--coral),var(--purple),var(--teal));
+  transition:width .4s ease;z-index:1000;
+  box-shadow:0 0 12px rgba(124,58,237,.6);
+}
+
+/* ─── TOP NAV ──────────────────────────────────────── */
+#top-nav{
+  position:fixed;top:5px;left:0;right:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.55rem 1.4rem;z-index:999;
+}
+#slide-counter{
+  font-family:'Fredoka One',cursive;
+  font-size:1rem;color:rgba(255,255,255,.7);
+  background:rgba(255,255,255,.08);
+  padding:.3rem .9rem;border-radius:2rem;
+  backdrop-filter:blur(8px);
+}
+#slide-title-nav{
+  font-family:'Fredoka One',cursive;
+  font-size:1.1rem;color:var(--yellow);
+  text-shadow:0 2px 8px rgba(0,0,0,.4);
+  max-width:60%;text-align:center;
+}
+#nav-dots{
+  display:flex;gap:.4rem;align-items:center;
+}
+.dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,.25);
+  cursor:pointer;transition:all .3s;
+}
+.dot.active{background:var(--yellow);transform:scale(1.5);}
+.dot:hover{background:rgba(255,255,255,.6);}
+
+/* ─── SLIDES WRAPPER ───────────────────────────────── */
+#slides-wrapper{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.slide{
+  display:none;
+  position:absolute;
+  width:min(960px,96vw);
+  max-height:96vh;
+  overflow-y:auto;
+  animation:slideIn .45s cubic-bezier(.22,.68,0,1.2) both;
+}
+.slide.active{display:block;}
+@keyframes slideIn{
+  from{opacity:0;transform:translateY(28px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* ─── DARK SLIDE ───────────────────────────────────── */
+.dark-slide{
+  background:linear-gradient(135deg,var(--dark-bg) 0%,var(--dark-bg2) 100%);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:2.5rem 2.8rem;
+  border:1px solid rgba(93,184,196,.15);
+  position:relative;overflow:hidden;
+}
+.dark-slide::before{
+  content:'';position:absolute;
+  width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,58,237,.12),transparent 70%);
+  top:-80px;right:-80px;pointer-events:none;
+}
+.dark-slide::after{
+  content:'';position:absolute;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(249,97,103,.08),transparent 70%);
+  bottom:-60px;left:-60px;pointer-events:none;
+}
+
+/* ─── LIGHT SLIDE ──────────────────────────────────── */
+.light-slide{
+  background:var(--off-white);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:0 0 1.8rem;
+  overflow:hidden;
+}
+.slide-header{
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem 1.4rem;
+  font-family:'Fredoka One',cursive;
+  font-size:1.45rem;color:#fff;
+  text-align:center;
+}
+.slide-header.teal{background:linear-gradient(90deg,var(--teal-dark),var(--teal));}
+.slide-header.coral{background:linear-gradient(90deg,var(--coral-dark),var(--coral));}
+.slide-header.amber{background:linear-gradient(90deg,var(--amber-dark),var(--amber));}
+.slide-header.purple{background:linear-gradient(90deg,var(--purple-dark),var(--purple));}
+.slide-header.green{background:linear-gradient(90deg,#1e8f3a,var(--green));}
+.slide-body{padding:1.4rem 2rem 0;}
+
+/* ─── TYPOGRAPHY ───────────────────────────────────── */
+.slide-tag{
+  display:inline-block;
+  font-family:'Fredoka One',cursive;
+  font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:.25rem .8rem;border-radius:2rem;margin-bottom:.5rem;
+}
+.tag-teal{background:var(--teal-light);color:var(--teal-dark);}
+.tag-coral{background:var(--coral-light);color:var(--coral-dark);}
+.tag-amber{background:var(--amber-light);color:var(--amber-dark);}
+.tag-purple{background:var(--purple-light);color:var(--purple-dark);}
+
+.big-title{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(1.8rem,4vw,3rem);
+  line-height:1.1;margin-bottom:.5rem;
+}
+.big-title.yellow{color:var(--yellow);}
+.big-title.teal{color:var(--teal-light);}
+.big-title.coral{color:var(--coral);}
+.big-title.white{color:#fff;}
+.big-title.purple{color:var(--purple);}
+
+.subtitle{
+  font-size:clamp(.9rem,2vw,1.15rem);
+  opacity:.8;margin-bottom:1.2rem;
+}
+.subtitle.light{color:var(--teal-light);}
+.subtitle.dark{color:var(--text-gray);}
+
+/* ─── CARDS & GRIDS ────────────────────────────────── */
+.card{
+  background:#fff;border-radius:var(--radius);
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  padding:1.2rem 1.4rem;
+  border:2px solid transparent;
+  transition:transform .25s,box-shadow .25s;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.14);}
+.card.coral{border-color:var(--coral);}
+.card.amber{border-color:var(--amber);}
+.card.teal{border-color:var(--teal);}
+.card.green{border-color:var(--green);}
+.card.purple{border-color:var(--purple);}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem;}
+
+/* ─── DEVICE PHOTO CARD ────────────────────────────── */
+.device-card{
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:0 6px 24px rgba(0,0,0,.12);
+  transition:transform .3s,box-shadow .3s;
+  cursor:default;position:relative;
+}
+.device-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 12px 36px rgba(0,0,0,.2);}
+.device-card img{
+  width:100%;aspect-ratio:1;object-fit:cover;display:block;
+}
+.device-card .dc-label{
+  padding:.7rem .9rem .5rem;
+  background:#fff;
+  font-family:'Fredoka One',cursive;
+  font-size:1.05rem;text-align:center;
+}
+.device-card .dc-tag{
+  display:block;
+  text-align:center;
+  font-size:.8rem;font-weight:700;
+  padding:.3rem;
+  color:#fff;
+}
+.device-card.hardware .dc-label{color:var(--coral);}
+.device-card.hardware .dc-tag{background:var(--coral);}
+.device-card.software .dc-label{color:var(--purple-dark);}
+.device-card.software .dc-tag{background:var(--purple);}
+
+/* ─── BULLET LIST ──────────────────────────────────── */
+.bullet-list{list-style:none;display:flex;flex-direction:column;gap:.65rem;}
+.bullet-list li{
+  display:flex;align-items:center;gap:.75rem;
+  background:#fff;border-radius:.8rem;
+  padding:.75rem 1rem;
+  font-size:1rem;font-weight:600;color:var(--text-dark);
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  border-left:4px solid transparent;
+  transition:transform .2s;
+}
+.bullet-list li:hover{transform:translateX(4px);}
+.bullet-list.coral li{border-left-color:var(--coral);}
+.bullet-list.amber li{border-left-color:var(--amber);}
+.bullet-list.teal li{border-left-color:var(--teal);}
+.bullet-list.purple li{border-left-color:var(--purple);}
+.bullet-list li .bullet-icon{font-size:1.3rem;}
+
+/* ─── BADGE ────────────────────────────────────────── */
+.badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:'Fredoka One',cursive;font-size:.95rem;
+  padding:.35rem 1.1rem;border-radius:2rem;
+  font-weight:700;
+}
+.badge.coral{background:var(--coral);color:#fff;}
+.badge.amber{background:var(--amber);color:#fff;}
+.badge.teal{background:var(--teal);color:#fff;}
+.badge.green{background:var(--green);color:#fff;}
+.badge.yellow{background:var(--yellow);color:var(--dark-bg);}
+.badge.purple{background:var(--purple);color:#fff;}
+
+/* ─── ANALOGY BOX ──────────────────────────────────── */
+.analogy-box{
+  border-radius:var(--radius);
+  padding:1rem 1.2rem;
+  display:flex;gap:.8rem;align-items:flex-start;
+  font-size:.92rem;font-style:italic;font-weight:600;
+}
+.analogy-box.coral{background:var(--coral-light);color:var(--coral-dark);border:1.5px dashed var(--coral);}
+.analogy-box.amber{background:var(--amber-light);color:var(--amber-dark);border:1.5px dashed var(--amber);}
+.analogy-box.purple{background:var(--purple-light);color:var(--purple-dark);border:1.5px dashed var(--purple);}
+.analogy-box.teal{background:var(--teal-light);color:var(--teal-dark);border:1.5px dashed var(--teal);}
+.analogy-box .analogy-icon{font-size:1.8rem;flex-shrink:0;}
+
+/* ─── DEFINITION PANEL ─────────────────────────────── */
+.def-panel{
+  display:grid;grid-template-columns:1fr 1.6fr;gap:1.4rem;
+}
+.def-left{
+  border-radius:var(--radius);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:2rem 1rem;text-align:center;color:#fff;
+  gap:1rem;
+}
+.def-left.coral{background:linear-gradient(160deg,var(--coral),var(--coral-dark));}
+.def-left.amber{background:linear-gradient(160deg,var(--amber),var(--amber-dark));}
+.def-left.purple{background:linear-gradient(160deg,var(--purple),var(--purple-dark));}
+.def-left .def-word{
+  font-family:'Fredoka One',cursive;
+  font-size:2.4rem;letter-spacing:.05em;
+}
+.def-left .def-img{width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.25));}
+.def-left .def-desc{
+  font-size:.9rem;font-weight:700;
+  background:rgba(0,0,0,.18);border-radius:.8rem;padding:.6rem .8rem;
+  line-height:1.4;
+}
+.def-right{
+  display:flex;flex-direction:column;gap:.9rem;
+  justify-content:center;
+}
+
+/* ─── RECAP ROWS ───────────────────────────────────── */
+.recap-row{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;gap:.8rem;
+  animation:fadeUp .4s ease both;
+}
+.recap-q,.recap-a{
+  border-radius:.9rem;padding:.75rem 1rem;
+  font-weight:700;font-size:.95rem;
+}
+.recap-q{background:#fff;border:1.5px solid var(--teal);color:var(--text-dark);}
+.recap-a{background:var(--teal);color:#fff;text-align:center;}
+.recap-arrow{font-size:1.4rem;color:var(--teal);}
+
+/* ─── SPLIT PANEL ──────────────────────────────────── */
+.split-panel{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:1rem;align-items:center;
+}
+.split-box{
+  border-radius:var(--radius);padding:1.5rem 1rem;
+  text-align:center;color:#fff;
+  background:var(--dark-bg2);border:1.5px solid rgba(93,184,196,.3);
+}
+.split-box .emoji{font-size:3rem;margin-bottom:.5rem;}
+.split-box .split-name{
+  font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:.3rem;
+}
+.split-box .split-sub{font-size:.85rem;color:var(--teal-mid);line-height:1.4;}
+.split-mid{text-align:center;color:var(--yellow);font-size:.85rem;font-weight:800;}
+.split-mid .arrow{font-size:2rem;display:block;}
+.split-mid .label{
+  display:inline-block;margin:.2rem 0;
+  font-family:'Fredoka One',cursive;font-size:.8rem;
+  padding:.15rem .6rem;border-radius:2rem;
+}
+.split-mid .label.coral{background:var(--coral);color:#fff;}
+.split-mid .label.amber{background:var(--amber);color:#fff;}
+.split-mid .label.purple{background:var(--purple);color:#fff;}
+
+/* ─── THE RULE SLIDE ───────────────────────────────── */
+.rule-panel{
+  display:grid;grid-template-columns:1fr 60px 1fr;
+  gap:1rem;align-items:center;
+}
+.rule-box{
+  border-radius:var(--radius);padding:1.8rem 1.2rem;
+  text-align:center;
+  border:2px solid;
+}
+.rule-box.coral{background:rgba(249,97,103,.12);border-color:var(--coral);}
+.rule-box.purple{background:rgba(124,58,237,.12);border-color:var(--purple);}
+.rule-box .rule-word{
+  font-family:'Fredoka One',cursive;
+  font-size:2.2rem;margin:1rem 0 .5rem;
+}
+.rule-box.coral .rule-word{color:var(--coral);}
+.rule-box.purple .rule-word{color:var(--purple);}
+.rule-box .rule-desc{font-size:.95rem;color:rgba(255,255,255,.85);margin-bottom:.6rem;}
+.rule-box .rule-devices{font-size:.8rem;color:rgba(255,255,255,.5);}
+.rule-vs{
+  font-family:'Fredoka One',cursive;font-size:2rem;
+  color:var(--yellow);text-align:center;
+}
+.rule-footer{
+  margin-top:1.4rem;
+  background:rgba(93,184,196,.15);
+  border:1px solid var(--teal-mid);
+  border-radius:.9rem;padding:.9rem 1.2rem;
+  text-align:center;
+  font-family:'Fredoka One',cursive;
+  font-size:1.05rem;color:var(--yellow);
+}
+
+/* ─── ACTIVITY SLIDE ───────────────────────────────── */
+.activity-instruction{
+  background:var(--teal-light);border:1.5px solid var(--teal);
+  border-radius:.9rem;padding:.85rem 1rem;
+  text-align:center;
+  font-family:'Fredoka One',cursive;
+  font-size:1.15rem;color:var(--teal-dark);
+  margin-bottom:1.2rem;
+}
+.activity-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;
+}
+.activity-card{
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  border:2px solid;cursor:pointer;
+  transition:transform .25s;position:relative;
+}
+.activity-card:hover{transform:scale(1.04);}
+.activity-card.coral{border-color:var(--coral);}
+.activity-card.purple{border-color:var(--purple);}
+.activity-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.activity-card .ac-name{
+  padding:.5rem;text-align:center;
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  background:#fff;
+}
+.activity-card.coral .ac-name{color:var(--coral);}
+.activity-card.purple .ac-name{color:var(--purple-dark);}
+.activity-card .ac-answer{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:.4rem;text-align:center;
+  font-family:'Fredoka One',cursive;font-size:1rem;color:#fff;
+  opacity:0;transition:opacity .3s;
+}
+.activity-card.coral .ac-answer{background:var(--coral);}
+.activity-card.purple .ac-answer{background:var(--purple);}
+.activity-card:hover .ac-answer{opacity:1;}
+
+/* ─── QUIZ SLIDE ───────────────────────────────────── */
+.quiz-list{display:flex;flex-direction:column;gap:.85rem;}
+.quiz-item{
+  display:grid;grid-template-columns:1fr auto;
+  gap:.8rem;align-items:center;
+}
+.quiz-q{
+  border-radius:.9rem;padding:.85rem 1.1rem;
+  font-weight:700;font-size:1rem;color:#fff;
+  opacity:0;transform:translateX(-20px);
+  transition:opacity .4s,transform .4s;
+}
+.quiz-item.revealed .quiz-q{opacity:1;transform:translateX(0);}
+.quiz-hint{
+  border-radius:.9rem;padding:.85rem 1rem;
+  font-size:.88rem;color:#fff;font-style:italic;
+  min-width:200px;text-align:center;
+  opacity:0;transition:opacity .5s .15s;
+}
+.quiz-item.revealed .quiz-hint{opacity:.7;}
+
+/* ─── AGENDA ───────────────────────────────────────── */
+.agenda-list{display:flex;flex-direction:column;gap:.7rem;}
+.agenda-item{
+  display:grid;grid-template-columns:48px 1fr;
+  gap:.8rem;align-items:center;
+  border-radius:.9rem;padding:.7rem 1rem;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  transition:background .2s;
+}
+.agenda-item:hover{background:rgba(255,255,255,.1);}
+.agenda-num{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka One',cursive;font-size:1.1rem;color:#fff;
+  flex-shrink:0;
+}
+.agenda-label{font-family:'Fredoka One',cursive;font-size:1rem;margin-bottom:.1rem;}
+.agenda-desc{font-size:.82rem;color:rgba(255,255,255,.55);}
+
+/* ─── HOMEWORK ─────────────────────────────────────── */
+.hw-panel{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+.hw-card{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.hw-card-head{
+  padding:.75rem 1rem;
+  font-family:'Fredoka One',cursive;font-size:1rem;color:#fff;
+  text-align:center;
+}
+.hw-card-head.coral{background:var(--coral);}
+.hw-card-head.teal{background:var(--teal);}
+.hw-card-head.purple{background:var(--purple);}
+.hw-card-body{background:#fff;padding:1rem;}
+.device-pill{
+  display:inline-block;
+  background:var(--coral-light);border:1px solid var(--coral);
+  color:var(--text-dark);font-size:.82rem;font-weight:700;
+  border-radius:2rem;padding:.25rem .7rem;margin:.18rem;
+}
+.device-pill.purple{
+  background:var(--purple-light);border-color:var(--purple);
+}
+.hw-teaser{
+  margin-top:1rem;
+  background:var(--teal-light);border:1.5px solid var(--teal);
+  border-radius:.9rem;padding:.75rem 1rem;text-align:center;
+  font-family:'Fredoka One',cursive;font-size:.92rem;color:var(--teal-dark);
+}
+
+/* ─── DEVICE DETAIL SLIDE ──────────────────────────── */
+.device-detail{
+  display:grid;grid-template-columns:1fr 1.4fr;gap:1.4rem;
+  align-items:start;
+}
+.device-photo-frame{
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.15);
+  border:3px solid;
+}
+.device-photo-frame.coral{border-color:var(--coral);}
+.device-photo-frame.amber{border-color:var(--amber);}
+.device-photo-frame.purple{border-color:var(--purple);}
+.device-photo-frame img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.device-detail-right{display:flex;flex-direction:column;gap:.8rem;}
+.device-confirm-badge{
+  text-align:center;border-radius:.9rem;padding:.8rem 1rem;
+  font-family:'Fredoka One',cursive;font-size:1rem;color:#fff;
+}
+.device-confirm-badge.coral{background:var(--coral);}
+.device-confirm-badge.amber{background:var(--amber);}
+.device-confirm-badge.purple{background:var(--purple);}
+.device-challenge{
+  text-align:center;font-weight:800;font-size:.92rem;
+  padding:.5rem;border-radius:.8rem;
+}
+.device-challenge.coral{color:var(--coral);background:var(--coral-light);}
+.device-challenge.amber{color:var(--amber-dark);background:var(--amber-light);}
+.device-challenge.purple{color:var(--purple-dark);background:var(--purple-light);}
+
+/* ─── SUMMARY BANNER ───────────────────────────────── */
+.summary-banner{
+  padding:.65rem 1rem;text-align:center;
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  margin-bottom:1rem;border-radius:.8rem;
+}
+.summary-banner.coral{background:var(--coral-light);color:var(--coral-dark);border:1.5px solid var(--coral);}
+.summary-banner.purple{background:var(--purple-light);color:var(--purple-dark);border:1.5px solid var(--purple);}
+
+/* ─── ANALOGY SLIDE ────────────────────────────────── */
+.analogy-panel{
+  display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;
+  align-items:center;
+}
+.analogy-img-frame{
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.2);
+  border:3px solid var(--yellow);
+}
+.analogy-img-frame img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.analogy-detail{display:flex;flex-direction:column;gap:.9rem;}
+.analogy-label{
+  display:flex;align-items:center;gap:.6rem;
+  border-radius:.9rem;padding:.8rem 1rem;
+  font-family:'Fredoka One',cursive;font-size:1.05rem;
+}
+.analogy-label.coral{background:rgba(249,97,103,.18);color:var(--coral);border:1.5px solid var(--coral);}
+.analogy-label.purple{background:rgba(124,58,237,.15);color:var(--purple);border:1.5px solid var(--purple);}
+.analogy-label .al-icon{font-size:1.8rem;}
+.analogy-conclusion{
+  background:rgba(255,209,102,.15);border:1.5px solid var(--yellow);
+  border-radius:.9rem;padding:.8rem 1rem;
+  text-align:center;
+  font-family:'Fredoka One',cursive;font-size:.95rem;color:var(--yellow);
+}
+
+/* ─── TITLE SLIDE LAYOUT ───────────────────────────── */
+.title-layout{
+  display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;
+}
+.title-left-panel{
+  background:linear-gradient(160deg,var(--purple),var(--purple-dark));
+  border-radius:var(--radius);padding:2.2rem 1.6rem;
+  text-align:center;
+  box-shadow:0 8px 32px rgba(124,58,237,.35);
+}
+.title-icons-row{display:flex;justify-content:center;gap:1.2rem;margin-bottom:1rem;}
+.title-icon-box{
+  background:rgba(255,255,255,.15);border-radius:.9rem;
+  padding:.7rem;display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;backdrop-filter:blur(4px);
+}
+.title-divider{height:2px;background:rgba(255,255,255,.25);margin:1rem 0;}
+.title-session{font-family:'Fredoka One',cursive;font-size:1rem;color:rgba(255,255,255,.8);}
+.title-main{font-family:'Fredoka One',cursive;font-size:2.6rem;color:#fff;line-height:1;}
+.title-sub{font-size:.85rem;color:rgba(255,255,255,.7);margin-top:.6rem;}
+.title-right{display:flex;flex-direction:column;gap:1.2rem;}
+.title-question{
+  border-radius:var(--radius);padding:1.2rem 1.4rem;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(6px);
+}
+.title-q-text{font-size:1.1rem;color:var(--teal-light);line-height:1.4;}
+.title-q-answer{
+  font-family:'Fredoka One',cursive;font-size:1.4rem;
+  color:var(--yellow);margin-top:.4rem;
+}
+.stars-row{display:flex;gap:.5rem;font-size:1.8rem;margin-top:.8rem;}
+
+/* ─── MINI GAME ────────────────────────────────────── */
+.game-board {
+  display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+  background: var(--dark-bg); border-radius: 1.5rem; padding: 2rem;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+  margin-top: 1rem; border: 4px solid var(--purple);
+}
+.game-score { font-family: 'Fredoka One', cursive; font-size: 1.8rem; color: var(--yellow); }
+.game-stage {
+  width: 250px; height: 250px; background: white; border-radius: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3); padding: 1rem; position: relative;
+  transition: transform 0.2s; border: 4px solid white;
+}
+.game-stage img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.game-device-name {
+  position: absolute; bottom: -20px; background: var(--purple-dark); color: white;
+  padding: 0.4rem 1rem; border-radius: 2rem; font-weight: 800; border: 3px solid white;
+}
+.game-controls { display: flex; gap: 2rem; margin-top: 1.5rem; width: 100%; justify-content: center; }
+.game-btn {
+  flex: 1; max-width: 200px; padding: 1.2rem; border-radius: 1.5rem; border: none;
+  font-family: 'Fredoka One', cursive; font-size: 1.5rem; color: white; cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s; display: flex; flex-direction: column; align-items: center;
+}
+.game-btn:active { transform: scale(0.95); }
+.btn-hardware { background: var(--coral); box-shadow: 0 8px 0 var(--coral-dark); }
+.btn-hardware:active { box-shadow: 0 0 0 var(--coral-dark); transform: translateY(8px); }
+.btn-software { background: var(--purple); box-shadow: 0 8px 0 var(--purple-dark); }
+.btn-software:active { box-shadow: 0 0 0 var(--purple-dark); transform: translateY(8px); }
+.game-win { text-align: center; display: none; flex-direction: column; gap: 1rem; }
+
+@keyframes shake-error {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-15px); }
+  40%, 80% { transform: translateX(15px); }
+}
+.shake-error { animation: shake-error 0.4s ease-in-out; border-color: var(--coral) !important; }
+.pulse-success { transform: scale(1.1); border-color: var(--green) !important; box-shadow: 0 0 30px var(--green); }
+.hidden { display: none !important; }
+
+/* ─── NAV BUTTONS ──────────────────────────────────── */
+#nav-buttons{
+  position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%);
+  display:flex;gap:1rem;align-items:center;z-index:999;
+}
+.nav-btn{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  padding:.7rem 1.8rem;border-radius:2rem;border:none;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+}
+.nav-btn:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.35);}
+.nav-btn:active{transform:scale(.96);}
+#btn-prev{background:rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(8px);}
+#btn-next{background:linear-gradient(135deg,var(--purple),var(--teal));color:#fff;}
+.nav-btn svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.5;fill:none;}
+
+/* ─── CONFETTI ─────────────────────────────────────── */
+.confetti-piece{
+  position:fixed;width:10px;height:10px;
+  border-radius:2px;top:-20px;
+  animation:confettiFall linear forwards;
+  pointer-events:none;z-index:9999;
+}
+@keyframes confettiFall{
+  to{transform:translateY(110vh) rotate(720deg);}
+}
+
+/* ─── UTILITIES ────────────────────────────────────── */
+.text-center{text-align:center;}
+.mt1{margin-top:.6rem;}
+.mt2{margin-top:1.2rem;}
+.emoji-lg{font-size:2.5rem;}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.fade-up{animation:fadeUp .5s ease both;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.pulse{animation:pulse 2s ease-in-out infinite;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:10px;}
+
+/* ─── INTRO QUESTION SLIDE ─────────────────────────── */
+.intro-question-panel{
+  display:flex;flex-direction:column;gap:1.4rem;
+  align-items:center;margin-top:1.2rem;
+}
+.intro-q-row{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:1rem;align-items:center;width:100%;
+}
+.intro-q-bubble{
+  border-radius:var(--radius);padding:1.4rem 1.2rem;
+  text-align:center;
+  font-family:'Fredoka One',cursive;font-size:1.15rem;
+  border:2px solid;
+}
+.intro-q-bubble.coral{background:rgba(249,97,103,.12);border-color:var(--coral);color:var(--coral);}
+.intro-q-bubble.purple{background:rgba(124,58,237,.12);border-color:var(--purple);color:var(--purple);}
+.intro-q-bubble .iq-emoji{font-size:2.4rem;display:block;margin-bottom:.5rem;}
+.intro-q-vs{
+  font-family:'Fredoka One',cursive;font-size:1.8rem;
+  color:var(--yellow);
+}
+.intro-q-conclusion{
+  background:rgba(255,209,102,.15);border:1.5px solid var(--yellow);
+  border-radius:.9rem;padding:.9rem 1.2rem;
+  text-align:center;
+  font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--yellow);
+  width:100%;
+}
+
+/* ─── RECAP TODAY SLIDE ────────────────────────────── */
+.recap-today{
+  display:flex;flex-direction:column;gap:.7rem;
+}
+.recap-today-item{
+  display:flex;align-items:center;gap:.8rem;
+  border-radius:.9rem;padding:.75rem 1rem;
+  background:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  transition:transform .2s;
+}
+.recap-today-item:hover{transform:translateX(4px);}
+.recap-today-icon{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;flex-shrink:0;color:#fff;
+}
+.recap-today-text{
+  font-weight:700;font-size:.95rem;color:var(--text-dark);
+}
+.recap-today-text strong{color:var(--purple-dark);}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<div id="top-nav">
+  <div id="slide-counter">1 / 22</div>
+  <div id="slide-title-nav">Hardware &amp; Software</div>
+  <div id="nav-dots"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SLIDES
+═══════════════════════════════════════════════════ -->
+<div id="slides-wrapper">
+
+<!-- ── SLIDE 1: TITLE ────────────────────────────── -->
+<div class="slide dark-slide active" data-title="Welcome!">
+  <div class="title-layout">
+    <div class="title-left-panel">
+      <div class="title-icons-row">
+        <div class="title-icon-box pulse">🖥️</div>
+        <div class="title-icon-box pulse" style="animation-delay:.3s">💿</div>
+        <div class="title-icon-box pulse" style="animation-delay:.6s">🔧</div>
+      </div>
+      <div class="title-divider"></div>
+      <div class="title-session">Session 3</div>
+      <div class="title-main">Hardware &amp;<br>Software</div>
+      <div class="title-sub">Ages 6–9 &nbsp;·&nbsp; Online via Zoom</div>
+    </div>
+    <div class="title-right">
+      <div class="title-question">
+        <div class="title-q-text">Can you touch a game? 🤔</div>
+        <div class="title-q-answer">Can you touch a keyboard?</div>
+      </div>
+      <div class="title-question">
+        <div class="title-q-text">Today you will learn about…</div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem;">
+          <span class="badge coral">HARDWARE</span>
+          <span class="badge purple">SOFTWARE</span>
+          <span class="badge teal">The Rule</span>
+          <span class="badge yellow">Quiz</span>
+        </div>
+      </div>
+      <div class="stars-row">⭐⭐⭐</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 2: AGENDA ───────────────────────────── -->
+<div class="slide dark-slide" data-title="Today's Agenda">
+  <div class="big-title yellow" style="margin-bottom:1.2rem">📋 What We Will Do Today</div>
+  <div class="agenda-list">
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--teal)">1</div><div><div class="agenda-label" style="color:var(--teal-light)">🧠 Recap</div><div class="agenda-desc">Quick memory check from Session 2</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--coral)">2</div><div><div class="agenda-label" style="color:#FEE8E9">🔧 HARDWARE</div><div class="agenda-desc">Learn what Hardware means + real examples</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--purple)">3</div><div><div class="agenda-label" style="color:var(--purple-light)">💿 SOFTWARE</div><div class="agenda-desc">Learn what Software means + real examples</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--yellow)">4</div><div><div class="agenda-label" style="color:var(--amber-light)">💡 The Rule</div><div class="agenda-desc">The easy trick to tell them apart</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--teal)">5</div><div><div class="agenda-label" style="color:var(--teal-light)">🗣️ Languages</div><div class="agenda-desc">How to talk to a computer</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--green)">6</div><div><div class="agenda-label" style="color:var(--green-light)">🙋 Activity + Game</div><div class="agenda-desc">Sort items — Hardware or Software?</div></div></div>
+    <div class="agenda-item"><div class="agenda-num" style="background:var(--amber-dark)">7</div><div><div class="agenda-label" style="color:var(--amber-light)">📝 Quiz + Homework</div><div class="agenda-desc">Test your knowledge and take-home tasks</div></div></div>
+  </div>
+</div>
+
+<!-- ── SLIDE 3: SESSION 2 RECAP ──────────────────── -->
+<div class="slide light-slide" data-title="Recap — Session 2">
+  <div class="slide-header teal">🧠 Quick Recap — What Did We Learn Last Time?</div>
+  <div class="slide-body" style="display:flex;flex-direction:column;gap:.8rem;padding-top:1.2rem;">
+    <div class="recap-row fade-up" style="animation-delay:.1s">
+      <div class="recap-q">What is INPUT?</div>
+      <div class="recap-arrow">→</div>
+      <div class="recap-a">Sending information TO the computer!</div>
+    </div>
+    <div class="recap-row fade-up" style="animation-delay:.2s">
+      <div class="recap-q">What is OUTPUT?</div>
+      <div class="recap-arrow">→</div>
+      <div class="recap-a">Getting information FROM the computer!</div>
+    </div>
+    <div class="recap-row fade-up" style="animation-delay:.3s">
+      <div class="recap-q">Name 2 INPUT devices?</div>
+      <div class="recap-arrow">→</div>
+      <div class="recap-a">Keyboard, Mouse, Microphone, Camera</div>
+    </div>
+    <div class="recap-row fade-up" style="animation-delay:.4s">
+      <div class="recap-q">Name 2 OUTPUT devices?</div>
+      <div class="recap-arrow">→</div>
+      <div class="recap-a">Monitor, Speakers, Printer</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 4: TEACHER INTRO QUESTION ───────────── -->
+<div class="slide dark-slide" data-title="Can You Touch It?">
+  <div class="big-title yellow text-center">Let's Think About This… 🤔</div>
+  <div class="subtitle light text-center">Your teacher has a question for you!</div>
+  <div class="intro-question-panel">
+    <div class="intro-q-row">
+      <div class="intro-q-bubble coral">
+        <span class="iq-emoji">⌨️</span>
+        Can you TOUCH<br>a keyboard?
+      </div>
+      <div class="intro-q-vs">VS</div>
+      <div class="intro-q-bubble purple">
+        <span class="iq-emoji">🎮</span>
+        Can you TOUCH<br>a game?
+      </div>
+    </div>
+    <div class="intro-q-conclusion">
+      🌟 The keyboard is something you can hold and touch. The game lives INSIDE the computer!
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 5: WHAT IS HARDWARE? ────────────────── -->
+<div class="slide light-slide" data-title="What is HARDWARE?">
+  <div class="slide-header coral">🔧 What is HARDWARE?</div>
+  <div class="slide-body">
+    <div class="def-panel">
+      <div class="def-left coral">
+        <div class="def-word">HARDWARE</div>
+        <div style="font-size:3rem">🔧</div>
+        <div class="def-desc">Hardware = The physical parts of a computer that you can TOUCH</div>
+      </div>
+      <div class="def-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">✋</span>You CAN touch it, hold it, and pick it up</li>
+          <li><span class="bullet-icon">🏗️</span>It is made of metal, plastic, and wires</li>
+          <li><span class="bullet-icon">👀</span>You can SEE it on your desk</li>
+          <li><span class="bullet-icon">💪</span>The word "HARD" is inside "Hardware" — it is solid!</li>
+        </ul>
+        <div class="analogy-box coral">
+          <span class="analogy-icon">💡</span>
+          Think of your body! Your arms, legs, and eyes are like HARDWARE — they are the physical parts that do the work.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 6: HARDWARE — MONITOR ───────────────── -->
+<div class="slide light-slide" data-title="Monitor — Hardware">
+  <div class="slide-header coral">🖥️ Hardware Example 1 — The Monitor</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame coral">
+        <img src="img_monitor.png" alt="Computer monitor"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">🖥️</span>The screen that shows pictures and text</li>
+          <li><span class="bullet-icon">🖥️</span>You can touch the screen with your hand</li>
+          <li><span class="bullet-icon">🖥️</span>It sits on your desk — it is a real object</li>
+          <li><span class="bullet-icon">🖥️</span>Made of glass, plastic, and electronic parts</li>
+        </ul>
+        <div class="device-confirm-badge coral">HARDWARE ✓ — You CAN touch it!</div>
+        <div class="device-challenge coral">🤔 Look at your screen right now — that is a monitor!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 7: HARDWARE — KEYBOARD ──────────────── -->
+<div class="slide light-slide" data-title="Keyboard — Hardware">
+  <div class="slide-header coral">⌨️ Hardware Example 2 — The Keyboard</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame coral">
+        <img src="img_keyboard.png" alt="Computer keyboard"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">⌨️</span>Has buttons (keys) you press with your fingers</li>
+          <li><span class="bullet-icon">⌨️</span>You can pick it up and hold it</li>
+          <li><span class="bullet-icon">⌨️</span>Made of plastic with letters printed on top</li>
+          <li><span class="bullet-icon">⌨️</span>Connects to the computer with a wire or wirelessly</li>
+        </ul>
+        <div class="device-confirm-badge coral">HARDWARE ✓ — You CAN touch it!</div>
+        <div class="device-challenge coral">🎯 Press the letter A on your keyboard right now!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 8: HARDWARE — MOUSE ─────────────────── -->
+<div class="slide light-slide" data-title="Mouse — Hardware">
+  <div class="slide-header coral">🖱️ Hardware Example 3 — The Mouse</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame coral">
+        <img src="img_mouse.png" alt="Computer mouse"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">🖱️</span>A small device you hold in your hand</li>
+          <li><span class="bullet-icon">🖱️</span>You move it around on your desk</li>
+          <li><span class="bullet-icon">🖱️</span>Has buttons you click with your fingers</li>
+          <li><span class="bullet-icon">🖱️</span>Made of plastic — it is a real, solid thing</li>
+        </ul>
+        <div class="device-confirm-badge coral">HARDWARE ✓ — You CAN touch it!</div>
+        <div class="device-challenge coral">🎯 Hold your mouse and give it a wiggle!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 9: HARDWARE — CPU/SYSTEM UNIT ───────── -->
+<div class="slide light-slide" data-title="CPU — Hardware">
+  <div class="slide-header coral">🖥️ Hardware Example 4 — The System Unit (CPU Box)</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame coral">
+        <img src="s3_cpu.png" alt="Desktop computer system unit (CPU box)"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">🧠</span>The "brain box" of the computer</li>
+          <li><span class="bullet-icon">🔌</span>All the wires and cables plug into it</li>
+          <li><span class="bullet-icon">⚡</span>Inside: the processor, memory, and storage</li>
+          <li><span class="bullet-icon">🏗️</span>A big metal and plastic box — you can touch it!</li>
+        </ul>
+        <div class="device-confirm-badge coral">HARDWARE ✓ — You CAN touch it!</div>
+        <div class="device-challenge coral">🤔 Some computers hide this inside a laptop!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 10: HARDWARE — HEADPHONES ──────────────── -->
+<div class="slide light-slide" data-title="Headphones — Hardware">
+  <div class="slide-header coral">🎧 Hardware Example 5 — Headphones</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame coral">
+        <img src="img_headphones.png" alt="Headphones"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list coral">
+          <li><span class="bullet-icon">🎧</span>Plays sounds and music into your ears</li>
+          <li><span class="bullet-icon">🎧</span>A real device that you can wear</li>
+          <li><span class="bullet-icon">🎧</span>You can touch them and plug them in</li>
+          <li><span class="bullet-icon">🎧</span>Made of plastic, foam, and small speakers</li>
+        </ul>
+        <div class="device-confirm-badge coral">HARDWARE ✓ — You CAN touch it!</div>
+        <div class="device-challenge coral">🤔 Have you ever used headphones to listen to music?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 11: ALL HARDWARE SUMMARY ────────────── -->
+<div class="slide light-slide" data-title="All Hardware">
+  <div class="slide-header coral">🎯 All HARDWARE Examples — Can You Name Them?</div>
+  <div class="slide-body">
+    <div class="summary-banner coral">HARDWARE = Physical parts you CAN touch! 🔧</div>
+    <div class="grid-5">
+      <div class="device-card hardware">
+        <img src="img_monitor.png" alt="Monitor"/>
+        <div class="dc-label">Monitor</div>
+        <div class="dc-tag" style="background:var(--coral)">Screen</div>
+      </div>
+      <div class="device-card hardware">
+        <img src="img_keyboard.png" alt="Keyboard"/>
+        <div class="dc-label">Keyboard</div>
+        <div class="dc-tag" style="background:var(--coral)">Keys</div>
+      </div>
+      <div class="device-card hardware">
+        <img src="img_mouse.png" alt="Mouse"/>
+        <div class="dc-label">Mouse</div>
+        <div class="dc-tag" style="background:var(--coral)">Click</div>
+      </div>
+      <div class="device-card hardware">
+        <img src="s3_cpu.png" alt="CPU"/>
+        <div class="dc-label">CPU Box</div>
+        <div class="dc-tag" style="background:var(--coral)">Brain</div>
+      </div>
+      <div class="device-card hardware">
+        <img src="img_headphones.png" alt="Headphones"/>
+        <div class="dc-label">Headphones</div>
+        <div class="dc-tag" style="background:var(--coral)">Listen</div>
+      </div>
+    </div>
+    <div class="device-challenge coral mt2" style="padding:.65rem 1rem;border-radius:.8rem;text-align:center;background:var(--coral-light);">👉 All of these are REAL things — you can pick them up and hold them!</div>
+  </div>
+</div>
+
+<!-- ── SLIDE 12: WHAT IS SOFTWARE? ───────────────── -->
+<div class="slide light-slide" data-title="What is SOFTWARE?">
+  <div class="slide-header purple">💿 What is SOFTWARE?</div>
+  <div class="slide-body">
+    <div class="def-panel">
+      <div class="def-left purple">
+        <div class="def-word">SOFTWARE</div>
+        <div style="font-size:3rem">💿</div>
+        <div class="def-desc">Software = The programs and apps that run INSIDE the computer</div>
+      </div>
+      <div class="def-right">
+        <ul class="bullet-list purple">
+          <li><span class="bullet-icon">🚫</span>You CANNOT touch it — it lives inside the computer</li>
+          <li><span class="bullet-icon">💻</span>It is the programs, apps, and games you use</li>
+          <li><span class="bullet-icon">👀</span>You can SEE it on the screen, but not hold it</li>
+          <li><span class="bullet-icon">🧠</span>The word "SOFT" is inside "Software" — not solid!</li>
+        </ul>
+        <div class="analogy-box purple">
+          <span class="analogy-icon">💡</span>
+          Think of your brain! Your thoughts and ideas are like SOFTWARE — you cannot touch them, but they tell your body what to do.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 13: SOFTWARE — PAINT ────────────────── -->
+<div class="slide light-slide" data-title="Paint — Software">
+  <div class="slide-header purple">🎨 Software Example 1 — Paint</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame purple">
+        <img src="s3_paint_app.png" alt="Paint application"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list purple">
+          <li><span class="bullet-icon">🎨</span>A drawing program on your computer</li>
+          <li><span class="bullet-icon">🖌️</span>You use it to draw, color, and make art</li>
+          <li><span class="bullet-icon">🚫</span>You can NOT pick it up from the screen</li>
+          <li><span class="bullet-icon">💻</span>It lives INSIDE the computer</li>
+        </ul>
+        <div class="device-confirm-badge purple">SOFTWARE ✓ — You CANNOT touch it!</div>
+        <div class="device-challenge purple">🎨 Have you ever drawn something on a computer?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 14: SOFTWARE — CALCULATOR ───────────── -->
+<div class="slide light-slide" data-title="Calculator — Software">
+  <div class="slide-header purple">🧮 Software Example 2 — Calculator</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame purple">
+        <img src="s3_calculator_app.png" alt="Calculator application"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list purple">
+          <li><span class="bullet-icon">🧮</span>A program that helps you do math</li>
+          <li><span class="bullet-icon">➕</span>It can add, subtract, multiply, and divide</li>
+          <li><span class="bullet-icon">🚫</span>You see buttons on screen, but cannot touch them for real</li>
+          <li><span class="bullet-icon">💻</span>It is a program inside the computer, not a real thing</li>
+        </ul>
+        <div class="device-confirm-badge purple">SOFTWARE ✓ — You CANNOT touch it!</div>
+        <div class="device-challenge purple">🤔 What is 5 + 3? Try it in your head!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 15: SOFTWARE — WEB BROWSER ──────────── -->
+<div class="slide light-slide" data-title="Browser — Software">
+  <div class="slide-header purple">🌐 Software Example 3 — Web Browser</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame purple">
+        <img src="s3_browser_app.png" alt="Web browser"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list purple">
+          <li><span class="bullet-icon">🌐</span>Opens websites like YouTube and Google</li>
+          <li><span class="bullet-icon">🔍</span>You use it to search and learn new things</li>
+          <li><span class="bullet-icon">🚫</span>The browser is NOT a real object — just a program</li>
+          <li><span class="bullet-icon">💻</span>Examples: Chrome, Safari, Firefox, Edge</li>
+        </ul>
+        <div class="device-confirm-badge purple">SOFTWARE ✓ — You CANNOT touch it!</div>
+        <div class="device-challenge purple">🌍 You use a browser every time you go on the internet!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 16: SOFTWARE — GAMES ────────────────── -->
+<div class="slide light-slide" data-title="Games — Software">
+  <div class="slide-header purple">🎮 Software Example 4 — Games</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame purple">
+        <img src="s3_game_screenshot.png" alt="Computer game"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list purple">
+          <li><span class="bullet-icon">🎮</span>Fun programs you play on a computer or tablet</li>
+          <li><span class="bullet-icon">⭐</span>You see characters and levels on the screen</li>
+          <li><span class="bullet-icon">🚫</span>You CANNOT reach into the screen and grab them</li>
+          <li><span class="bullet-icon">💻</span>Games live INSIDE the computer or device</li>
+        </ul>
+        <div class="device-confirm-badge purple">SOFTWARE ✓ — You CANNOT touch it!</div>
+        <div class="device-challenge purple">🎮 What is your favorite game? It is Software!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 17: SOFTWARE — SCRATCH ──────────────── -->
+<div class="slide light-slide" data-title="Scratch — Software">
+  <div class="slide-header purple">🐱 Software Example 5 — Scratch</div>
+  <div class="slide-body">
+    <div class="device-detail">
+      <div class="device-photo-frame purple">
+        <img src="s3_scratch_app.png" alt="Scratch programming interface"/>
+      </div>
+      <div class="device-detail-right">
+        <ul class="bullet-list purple">
+          <li><span class="bullet-icon">🐱</span>A coding program made for kids like you!</li>
+          <li><span class="bullet-icon">🧩</span>You drag colorful blocks to make programs</li>
+          <li><span class="bullet-icon">🎭</span>You can make stories, games, and animations</li>
+          <li><span class="bullet-icon">🚫</span>Scratch is a program — you cannot hold it in your hand</li>
+        </ul>
+        <div class="device-confirm-badge purple">SOFTWARE ✓ — You CANNOT touch it!</div>
+        <div class="device-challenge purple">🐱 We will use Scratch later in this course!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 18: ALL SOFTWARE SUMMARY ────────────── -->
+<div class="slide light-slide" data-title="All Software">
+  <div class="slide-header purple">🎯 All SOFTWARE Examples — Can You Name Them?</div>
+  <div class="slide-body">
+    <div class="summary-banner purple">SOFTWARE = Programs and apps you CANNOT touch! 💿</div>
+    <div class="grid-5">
+      <div class="device-card software">
+        <img src="s3_paint_app.png" alt="Paint"/>
+        <div class="dc-label">Paint</div>
+        <div class="dc-tag" style="background:var(--purple)">Draw</div>
+      </div>
+      <div class="device-card software">
+        <img src="s3_calculator_app.png" alt="Calculator"/>
+        <div class="dc-label">Calculator</div>
+        <div class="dc-tag" style="background:var(--purple)">Math</div>
+      </div>
+      <div class="device-card software">
+        <img src="s3_browser_app.png" alt="Browser"/>
+        <div class="dc-label">Browser</div>
+        <div class="dc-tag" style="background:var(--purple)">Internet</div>
+      </div>
+      <div class="device-card software">
+        <img src="s3_game_screenshot.png" alt="Games"/>
+        <div class="dc-label">Games</div>
+        <div class="dc-tag" style="background:var(--purple)">Play</div>
+      </div>
+      <div class="device-card software">
+        <img src="s3_scratch_app.png" alt="Scratch"/>
+        <div class="dc-label">Scratch</div>
+        <div class="dc-tag" style="background:var(--purple)">Code</div>
+      </div>
+    </div>
+    <div class="device-challenge purple mt2" style="padding:.65rem 1rem;border-radius:.8rem;text-align:center;background:var(--purple-light);">👉 You can SEE them on the screen, but you CANNOT pick them up!</div>
+  </div>
+</div>
+
+<!-- ── SLIDE 19: THE SIMPLE RULE ──────────────────── -->
+<div class="slide dark-slide" data-title="The Simple Rule">
+  <div class="big-title yellow text-center">The Simple Rule 💡</div>
+  <div class="rule-panel" style="margin-top:1.2rem;">
+    <div class="rule-box coral">
+      <div style="font-size:2.5rem">🔧</div>
+      <div class="rule-word">HARDWARE</div>
+      <div class="rule-desc">You CAN touch it!</div>
+      <div class="rule-devices">Monitor · Keyboard · Mouse · CPU · Printer</div>
+    </div>
+    <div class="rule-vs">⟷</div>
+    <div class="rule-box purple">
+      <div style="font-size:2.5rem">💿</div>
+      <div class="rule-word">SOFTWARE</div>
+      <div class="rule-desc">You CANNOT touch it!</div>
+      <div class="rule-devices">Paint · Calculator · Browser · Games · Scratch</div>
+    </div>
+  </div>
+  <div class="rule-footer">
+    If you can TOUCH it → Hardware &nbsp;🔧&nbsp; If you CANNOT touch it → Software &nbsp;💿
+  </div>
+</div>
+
+<!-- ── SLIDE 20: TOY CAR ANALOGY ─────────────────── -->
+<div class="slide dark-slide" data-title="Toy Car Analogy 🚗">
+  <div class="big-title yellow text-center">Real-Life Example: Toy Car 🚗</div>
+  <div class="subtitle light text-center">A computer needs BOTH Hardware AND Software to work!</div>
+  <div class="analogy-panel" style="margin-top:1rem;">
+    <div class="analogy-img-frame">
+      <img src="s3_toycar.png" alt="Toy car with remote control"/>
+    </div>
+    <div class="analogy-detail">
+      <div class="analogy-label coral">
+        <span class="al-icon">🚗</span>
+        <div>The CAR itself = <strong>Hardware</strong><br><small style="font-weight:400;font-family:'Nunito',sans-serif;">You can touch it, hold it, pick it up!</small></div>
+      </div>
+      <div class="analogy-label purple">
+        <span class="al-icon">📋</span>
+        <div>The INSTRUCTIONS inside = <strong>Software</strong><br><small style="font-weight:400;font-family:'Nunito',sans-serif;">They tell the car to go forward, turn, and stop!</small></div>
+      </div>
+      <div class="analogy-conclusion">
+        🌟 Without Hardware, there is nothing to use.<br>
+        Without Software, it does not know what to do!<br>
+        A computer needs BOTH! 🤝
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 21: PROGRAMMING LANGUAGES ─────────────────── -->
+<div class="slide dark-slide" data-title="Programming Languages">
+  <div class="big-title yellow text-center">How Do We Talk to Computers? 🗣️</div>
+  <div class="subtitle light text-center">We use Programming Languages!</div>
+  
+  <div class="split-panel" style="margin-top:1.5rem;">
+    <div class="split-box" style="background:var(--teal-dark); border-color:var(--teal-light);">
+      <div class="emoji">🗣️</div>
+      <div class="split-name">Human Languages</div>
+      <div class="split-sub">Used to talk to other humans.</div>
+      <div style="margin-top:0.8rem;">
+        <span class="label coral" style="display:inline-block; padding:0.2rem 0.6rem; border-radius:1rem; font-size:0.8rem; margin:0.2rem; background:var(--coral);">English</span>
+        <span class="label coral" style="display:inline-block; padding:0.2rem 0.6rem; border-radius:1rem; font-size:0.8rem; margin:0.2rem; background:var(--coral);">Arabic</span>
+        <span class="label coral" style="display:inline-block; padding:0.2rem 0.6rem; border-radius:1rem; font-size:0.8rem; margin:0.2rem; background:var(--coral);">French</span>
+      </div>
+    </div>
+    
+    <div class="split-mid">
+      <span class="arrow">⟷</span>
+    </div>
+    
+    <div class="split-box" style="background:var(--purple-dark); border-color:var(--purple-light);">
+      <div class="emoji">💻</div>
+      <div class="split-name">Programming Languages</div>
+      <div class="split-sub">Used to talk to computers.</div>
+      <div style="margin-top:0.8rem;">
+        <span class="label purple" style="display:inline-block; padding:0.2rem 0.6rem; border-radius:1rem; font-size:0.8rem; margin:0.2rem; background:var(--purple);">Python</span>
+        <span class="label purple" style="display:inline-block; padding:0.2rem 0.6rem; border-radius:1rem; font-size:0.8rem; margin:0.2rem; background:var(--purple);">JavaScript</span>
+        <span class="label purple" style="display:inline-block; padding:0.2rem 0.6rem; border-radius:1rem; font-size:0.8rem; margin:0.2rem; background:var(--purple);">Scratch</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="analogy-conclusion" style="margin-top:1.5rem;">
+    🌟 When we write instructions using a Programming Language, we are creating <strong>SOFTWARE</strong>!
+  </div>
+</div>
+
+<!-- ── SLIDE 22: ACTIVITY ─────────────────────────── -->
+<div class="slide light-slide" data-title="Activity — Hardware or Software?">
+  <div class="slide-header teal">🙋 Activity — Hardware or Software?</div>
+  <div class="slide-body">
+    <div class="activity-instruction">🔧 Say "HARDWARE!" &nbsp;&nbsp;&nbsp; 💿 Say "SOFTWARE!"<br><small style="font-size:.75rem;font-family:'Nunito',sans-serif;font-weight:600">Hover over each card to reveal the answer!</small></div>
+    <div class="activity-grid">
+      <div class="activity-card coral">
+        <img src="img_keyboard.png" alt="Keyboard"/>
+        <div class="ac-name">Keyboard</div>
+        <div class="ac-answer">🔧 HARDWARE</div>
+      </div>
+      <div class="activity-card purple">
+        <img src="s3_paint_app.png" alt="Paint"/>
+        <div class="ac-name">Paint</div>
+        <div class="ac-answer">💿 SOFTWARE</div>
+      </div>
+      <div class="activity-card coral">
+        <img src="img_mouse.png" alt="Mouse"/>
+        <div class="ac-name">Mouse</div>
+        <div class="ac-answer">🔧 HARDWARE</div>
+      </div>
+      <div class="activity-card purple">
+        <img src="s3_game_screenshot.png" alt="Game"/>
+        <div class="ac-name">Games</div>
+        <div class="ac-answer">💿 SOFTWARE</div>
+      </div>
+      <div class="activity-card coral">
+        <img src="img_headphones.png" alt="Headphones"/>
+        <div class="ac-name">Headphones</div>
+        <div class="ac-answer">🔧 HARDWARE</div>
+      </div>
+      <div class="activity-card purple">
+        <img src="s3_scratch_app.png" alt="Scratch"/>
+        <div class="ac-name">Scratch</div>
+        <div class="ac-answer">💿 SOFTWARE</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 22: MINI GAME ─────────────────────────── -->
+<div class="slide dark-slide" data-title="Mini-Game! 🎮">
+  <div class="big-title yellow text-center">🎮 Game Time: Sort It Out!</div>
+  <div class="subtitle light text-center">Is it HARDWARE or SOFTWARE? Tap the correct button!</div>
+  
+  <div class="game-board" id="gameBoard">
+    <div class="game-score" id="gameScore">Score: 0 / 6</div>
+    <div class="game-stage" id="gameStage">
+      <img id="gameImage" src="" alt="Item"/>
+      <div class="game-device-name" id="gameDeviceName">Item Name</div>
+    </div>
+    <div class="game-controls">
+      <button class="game-btn btn-hardware" onclick="handleGameGuess('hardware')">
+        <span style="font-size:2rem">🔧</span> HARDWARE
+      </button>
+      <button class="game-btn btn-software" onclick="handleGameGuess('software')">
+        <span style="font-size:2rem">💿</span> SOFTWARE
+      </button>
+    </div>
+  </div>
+
+  <div class="game-win" id="gameWinScreen">
+    <div style="font-size:5rem">🏆</div>
+    <div class="big-title yellow">YOU WIN!</div>
+    <div style="font-size:1.5rem; color: white;">Amazing job! You know Hardware and Software!</div>
+    <button class="nav-btn" onclick="resetGame()" style="margin:1rem auto; background: var(--purple); color: white;">Play Again 🔄</button>
+  </div>
+</div>
+
+<!-- ── SLIDE 23: QUIZ ──────────────────────────────── -->
+<div class="slide dark-slide" data-title="Quiz Time ⭐">
+  <div class="big-title yellow text-center">⭐ Quiz Time — Are You Ready?</div>
+  <div class="subtitle light text-center">Type HARDWARE or SOFTWARE in the chat — GO! 🚀</div>
+  <div class="quiz-list" style="margin-top:1.2rem;" id="quizList">
+    <div class="quiz-item" data-qcolor="var(--coral)" data-hcolor="var(--coral-dark)">
+      <div class="quiz-q" style="background:rgba(249,97,103,.55)">1. Is a MOUSE Hardware or Software?</div>
+      <div class="quiz-hint" style="background:rgba(249,97,103,.35)">Answer: HARDWARE ✓</div>
+    </div>
+    <div class="quiz-item" data-qcolor="var(--purple)" data-hcolor="var(--purple-dark)">
+      <div class="quiz-q" style="background:rgba(124,58,237,.5)">2. Is PAINT Hardware or Software?</div>
+      <div class="quiz-hint" style="background:rgba(124,58,237,.35)">Answer: SOFTWARE ✓</div>
+    </div>
+    <div class="quiz-item" data-qcolor="var(--teal-mid)" data-hcolor="var(--teal-dark)">
+      <div class="quiz-q" style="background:rgba(93,184,196,.45)">3. Is a GAME Hardware or Software?</div>
+      <div class="quiz-hint" style="background:rgba(93,184,196,.3)">Answer: SOFTWARE ✓</div>
+    </div>
+    <div class="quiz-item" data-qcolor="var(--amber)" data-hcolor="var(--amber-dark)">
+      <div class="quiz-q" style="background:rgba(244,162,97,.5)">4. Is a PRINTER Hardware or Software?</div>
+      <div class="quiz-hint" style="background:rgba(244,162,97,.35)">Answer: HARDWARE ✓</div>
+    </div>
+    <div class="quiz-item" data-qcolor="var(--green)" data-hcolor="#1e8f3a">
+      <div class="quiz-q" style="background:rgba(45,198,83,.4)">5. Why do we need Software?</div>
+      <div class="quiz-hint" style="background:rgba(45,198,83,.25)">It tells the Hardware what to do!</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:1rem;font-size:1rem;color:var(--teal-light);">🎉 Amazing — you all learned so much today!</div>
+  <div style="text-align:center;margin-top:.6rem;">
+    <button class="nav-btn" id="revealQuiz" style="background:linear-gradient(135deg,var(--yellow),var(--amber));color:var(--dark-bg);margin:0 auto;">✨ Reveal Answers</button>
+  </div>
+</div>
+
+<!-- ── SLIDE 24: TODAY'S RECAP ──────────────────────── -->
+<div class="slide light-slide" data-title="What We Learned Today">
+  <div class="slide-header green">🌟 What We Learned Today!</div>
+  <div class="slide-body">
+    <div class="recap-today">
+      <div class="recap-today-item fade-up" style="animation-delay:.1s">
+        <div class="recap-today-icon" style="background:var(--coral)">🔧</div>
+        <div class="recap-today-text"><strong>Hardware</strong> = The physical parts of a computer you CAN touch (Monitor, Keyboard, Mouse, CPU, Printer)</div>
+      </div>
+      <div class="recap-today-item fade-up" style="animation-delay:.2s">
+        <div class="recap-today-icon" style="background:var(--purple)">💿</div>
+        <div class="recap-today-text"><strong>Software</strong> = The programs and apps that live INSIDE the computer — you CANNOT touch them (Paint, Calculator, Browser, Games, Scratch)</div>
+      </div>
+      <div class="recap-today-item fade-up" style="animation-delay:.3s">
+        <div class="recap-today-icon" style="background:var(--yellow)">💡</div>
+        <div class="recap-today-text">The Simple Rule: <strong>Touch it? → Hardware!</strong> Can't touch it? → <strong>Software!</strong></div>
+      </div>
+      <div class="recap-today-item fade-up" style="animation-delay:.4s">
+        <div class="recap-today-icon" style="background:var(--teal)">🤝</div>
+        <div class="recap-today-text">A computer needs <strong>BOTH Hardware AND Software</strong> to work — like a toy car needs its body AND its instructions!</div>
+      </div>
+      <div class="recap-today-item fade-up" style="animation-delay:.5s">
+        <div class="recap-today-icon" style="background:var(--coral)">🗣️</div>
+        <div class="recap-today-text"><strong>Programming Languages</strong> = How we talk to computers to create Software (like Python or Scratch)!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 25: HOMEWORK ─────────────────────────── -->
+<div class="slide light-slide" data-title="Homework 📝">
+  <div class="slide-header teal">📝 Homework + See You Next Time!</div>
+  <div class="slide-body">
+    <div class="hw-panel">
+      <div class="hw-card">
+        <div class="hw-card-head coral">✏️ Task 1 — Sort These Items</div>
+        <div class="hw-card-body">
+          <p style="font-size:.9rem;font-weight:600;color:var(--text-dark);margin-bottom:.8rem;">Make two columns on paper:<br><strong>HARDWARE</strong> and <strong>SOFTWARE</strong><br>Write each item under the right column:</p>
+          <div>
+            <span class="device-pill">Keyboard</span>
+            <span class="device-pill">Mouse</span>
+            <span class="device-pill">Printer</span>
+            <span class="device-pill">Monitor</span>
+            <span class="device-pill purple">Paint</span>
+            <span class="device-pill purple">Calculator</span>
+            <span class="device-pill purple">Scratch</span>
+            <span class="device-pill purple">Web Browser</span>
+          </div>
+        </div>
+      </div>
+      <div class="hw-card">
+        <div class="hw-card-head purple">🎨 Task 2 — Draw &amp; Label</div>
+        <div class="hw-card-body">
+          <p style="font-size:.9rem;font-weight:600;color:var(--text-dark);line-height:1.6;">Draw a picture of a computer.<br>Point arrows to the HARDWARE parts.<br>Write the names of 3 SOFTWARE programs you use.</p>
+          <div style="margin-top:.8rem;background:var(--purple-light);border:1.5px dashed var(--purple);border-radius:.8rem;padding:.7rem;font-size:.88rem;font-weight:700;color:var(--purple-dark);">
+            ⭐ Bonus star if you can explain WHY a computer needs BOTH Hardware AND Software!
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hw-teaser">
+      🚀 Next Session: The Internet — How do computers talk to each other?
+    </div>
+    <div style="text-align:center;margin-top:1rem;font-size:1.8rem" class="pulse">🎉 Well done! Amazing work today! 🎉</div>
+  </div>
+</div>
+
+</div><!-- /slides-wrapper -->
+
+<!-- ── NAVIGATION BUTTONS ──────────────────────────── -->
+<div id="nav-buttons">
+  <button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Back
+  </button>
+  <button class="nav-btn" id="btn-next" onclick="changeSlide(1)">
+    Next
+    <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+  </button>
+</div>
+
+<script>
+// ─── STATE ──────────────────────────────────────────
+const slides     = Array.from(document.querySelectorAll('.slide'));
+const total      = slides.length;
+let current      = 0;
+
+// ─── DOTS ───────────────────────────────────────────
+const dotsContainer = document.getElementById('nav-dots');
+slides.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsContainer.appendChild(d);
+});
+
+// ─── PROGRESS + COUNTER ─────────────────────────────
+function updateUI() {
+  document.getElementById('progress-bar').style.width = ((current+1)/total*100)+'%';
+  document.getElementById('slide-counter').textContent = (current+1)+' / '+total;
+  document.getElementById('slide-title-nav').textContent = slides[current].dataset.title || '';
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===current));
+  document.getElementById('btn-prev').style.opacity = current === 0 ? '0.35' : '1';
+  document.getElementById('btn-next').innerHTML = current === total-1 
+    ? '🎉 Done!' 
+    : 'Next <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;stroke-width:2.5;fill:none"><polyline points="9 6 15 12 9 18"/></svg>';
+}
+
+// ─── SLIDE TRANSITION ───────────────────────────────
+function goTo(n) {
+  if (n < 0 || n >= total) return;
+  slides[current].classList.remove('active');
+  current = n;
+  slides[current].classList.add('active');
+  // re-trigger animation
+  const s = slides[current];
+  s.style.animation = 'none';
+  s.offsetHeight; // reflow
+  s.style.animation = '';
+  updateUI();
+
+  // trigger quiz reveal animation when on quiz slide
+  if (slides[current].dataset.title?.includes('Quiz')) {
+    document.querySelectorAll('.quiz-item').forEach((q,i) => {
+      setTimeout(() => q.classList.add('revealed'), i * 250);
+    });
+  }
+  // confetti on last slide
+  if (current === total - 1) launchConfetti();
+}
+
+function changeSlide(dir) { goTo(current + dir); }
+
+// ─── KEYBOARD NAVIGATION ────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+  if (e.key === 'ArrowLeft')  changeSlide(-1);
+});
+
+// ─── TOUCH / SWIPE ──────────────────────────────────
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) changeSlide(dx < 0 ? 1 : -1);
+});
+
+// ─── QUIZ REVEAL BUTTON ─────────────────────────────
+document.getElementById('revealQuiz')?.addEventListener('click', function() {
+  document.querySelectorAll('.quiz-item').forEach((q,i) => {
+    setTimeout(() => q.classList.add('revealed'), i * 200);
+  });
+  launchConfetti();
+  this.textContent = '✅ Revealed!';
+});
+
+// ─── CONFETTI ───────────────────────────────────────
+function launchConfetti() {
+  const colors = ['#F96167','#7C3AED','#028090','#FFD166','#2DC653','#5DB8C4','#6366F1'];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.left  = Math.random()*100+'vw';
+      el.style.background = colors[Math.floor(Math.random()*colors.length)];
+      el.style.width  = (8+Math.random()*8)+'px';
+      el.style.height = (8+Math.random()*8)+'px';
+      el.style.borderRadius = Math.random()>.5 ? '50%' : '2px';
+      el.style.animationDuration = (1.5+Math.random()*2.5)+'s';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, i * 40);
+  }
+}
+
+// ─── MINI GAME LOGIC ────────────────────────────────
+const gameItems = [
+  { name: 'Keyboard', type: 'hardware', img: 'img_keyboard.png' },
+  { name: 'Paint', type: 'software', img: 's3_paint_app.png' },
+  { name: 'Mouse', type: 'hardware', img: 'img_mouse.png' },
+  { name: 'Calculator', type: 'software', img: 's3_calculator_app.png' },
+  { name: 'Headphones', type: 'hardware', img: 'img_headphones.png' },
+  { name: 'Games', type: 'software', img: 's3_game_screenshot.png' },
+  { name: 'Monitor', type: 'hardware', img: 'img_monitor.png' },
+  { name: 'Browser', type: 'software', img: 's3_browser_app.png' },
+  { name: 'CPU Box', type: 'hardware', img: 's3_cpu.png' },
+  { name: 'Scratch', type: 'software', img: 's3_scratch_app.png' }
+];
+
+let activeGameItems = [];
+let currentGameIndex = 0;
+let gameScore = 0;
+const GAME_ROUNDS = 6;
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function initGame() {
+  activeGameItems = [...gameItems];
+  shuffle(activeGameItems);
+  activeGameItems = activeGameItems.slice(0, GAME_ROUNDS);
+  currentGameIndex = 0;
+  gameScore = 0;
+  
+  document.getElementById('gameBoard').classList.remove('hidden');
+  document.getElementById('gameWinScreen').style.display = 'none';
+  loadGameItem();
+}
+
+function loadGameItem() {
+  const item = activeGameItems[currentGameIndex];
+  document.getElementById('gameScore').textContent = `Score: ${gameScore} / ${GAME_ROUNDS}`;
+  document.getElementById('gameImage').src = item.img;
+  document.getElementById('gameDeviceName').textContent = item.name;
+  
+  const stage = document.getElementById('gameStage');
+  stage.className = 'game-stage'; // reset classes
+}
+
+function handleGameGuess(guessType) {
+  const item = activeGameItems[currentGameIndex];
+  const stage = document.getElementById('gameStage');
+  
+  if (guessType === item.type) {
+    // Correct
+    stage.classList.add('pulse-success');
+    gameScore++;
+    document.getElementById('gameScore').textContent = `Score: ${gameScore} / ${GAME_ROUNDS}`;
+    
+    setTimeout(() => {
+      currentGameIndex++;
+      if (currentGameIndex >= activeGameItems.length) {
+        winGame();
+      } else {
+        loadGameItem();
+      }
+    }, 600);
+  } else {
+    // Incorrect
+    stage.classList.remove('shake-error');
+    void stage.offsetWidth; // trigger reflow
+    stage.classList.add('shake-error');
+  }
+}
+
+function winGame() {
+  document.getElementById('gameBoard').classList.add('hidden');
+  document.getElementById('gameWinScreen').style.display = 'flex';
+  launchConfetti();
+}
+
+function resetGame() {
+  initGame();
+}
+
+// Initialize the game
+initGame();
+
+// ─── INIT ────────────────────────────────────────────
+updateUI();
+</script>
+</body>
+</html>
